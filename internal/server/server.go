@@ -13,9 +13,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/engine"
-	"github.com/fogbell-dev/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/engine"
+	"github.com/webgrip/fogbell/internal/slack"
 )
 
 const maxBody = 4 << 20

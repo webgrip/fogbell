@@ -9,10 +9,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/testutil"
 
-	"github.com/fogbell-dev/fogbell/internal/render"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/state"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/render"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 func TestOneMessagePerIncident(t *testing.T) {

@@ -5,7 +5,7 @@ fogbell is alpha software. Only the latest release is supported.
 ## Report a vulnerability
 
 Report it privately through GitHub:
-[open a draft security advisory](https://github.com/fogbell-dev/fogbell/security/advisories/new).
+[open a draft security advisory](https://github.com/webgrip/fogbell/security/advisories/new).
 Do not put credentials, exploit details or private deployment data in a public issue or pull request.
 
 A [maintainer](MAINTAINERS.md) aims to acknowledge a report within seven days, agree on severity with

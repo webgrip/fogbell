@@ -39,8 +39,8 @@ follows from the commits and the build follows from the tag.
   `checksums.txt` and an SPDX SBOM per archive, signs the checksums with `cosign sign-blob --bundle`,
   and attaches them to the GitHub release semantic-release created. ko builds the image on
   `cgr.dev/chainguard/static` for linux/amd64 and linux/arm64 with an SPDX SBOM, pushes it to
-  `ghcr.io/fogbell-dev/fogbell` and cosign signs it. The chart is packaged at the tag's version,
-  pushed to `oci://ghcr.io/fogbell-dev/charts/fogbell` and signed by digest. A Dockerfile is not
+  `ghcr.io/webgrip/fogbell` and cosign signs it. The chart is packaged at the tag's version,
+  pushed to `oci://ghcr.io/webgrip/charts/fogbell` and signed by digest. A Dockerfile is not
   needed: ko builds a static Go binary onto a distroless base.
 
 ### Consequences

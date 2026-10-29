@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/alert"
 )
 
 func teamGroup(team string) *alert.Group {

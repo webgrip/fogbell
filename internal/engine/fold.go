@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/render"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/render"
 )
 
 // fold puts a pod alert on a node whose parent incident (by default KubeNodeNotReady) is open and was

@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/render"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/state"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/render"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 // Silences maps a silence choice to its length in seconds.

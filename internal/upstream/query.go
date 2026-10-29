@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fogbell-dev/fogbell/internal/spark"
+	"github.com/webgrip/fogbell/internal/spark"
 )
 
 // Prometheus is a Prometheus-compatible query API, such as VictoriaMetrics.

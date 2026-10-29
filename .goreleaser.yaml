@@ -30,7 +30,7 @@ kos:
     main: ./cmd/fogbell
     base_image: cgr.dev/chainguard/static:latest
     repositories:
-      - ghcr.io/fogbell-dev/fogbell
+      - ghcr.io/webgrip/fogbell
     platforms: [linux/amd64, linux/arm64]
     tags:
       - "{{ .Version }}"
@@ -42,7 +42,7 @@ kos:
     flags:
       - -trimpath
     labels:
-      org.opencontainers.image.source: https://github.com/fogbell-dev/fogbell
+      org.opencontainers.image.source: https://github.com/webgrip/fogbell
       org.opencontainers.image.licenses: Apache-2.0
       org.opencontainers.image.version: "{{ .Version }}"
 checksum:
@@ -63,7 +63,7 @@ changelog:
   disable: true
 release:
   github:
-    owner: fogbell-dev
+    owner: webgrip
     name: fogbell
   mode: keep-existing
   prerelease: auto

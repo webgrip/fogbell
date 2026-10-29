@@ -1,7 +1,7 @@
 version = 1
 SPDX-PackageName = "fogbell"
 SPDX-PackageSupplier = "The fogbell Authors"
-SPDX-PackageDownloadLocation = "https://github.com/fogbell-dev/fogbell"
+SPDX-PackageDownloadLocation = "https://github.com/webgrip/fogbell"
 
 [[annotations]]
 path = "**"

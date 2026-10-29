@@ -8,8 +8,8 @@ import (
 
 	"go.yaml.in/yaml/v3"
 
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/state"
 )
 
 const expiryWarning = 3600

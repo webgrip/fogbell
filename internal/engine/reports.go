@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/render"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/render"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/state"
 )
 
 func (e *Engine) report(ctx context.Context, channel, text, event string, payload any) error {

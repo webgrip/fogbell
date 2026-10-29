@@ -10,7 +10,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/alert"
 )
 
 // Int is an integer that also reads a JSON number written with a fraction, such as 3.0.

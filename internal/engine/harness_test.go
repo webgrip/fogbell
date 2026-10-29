@@ -17,14 +17,14 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/testutil"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/config"
-	"github.com/fogbell-dev/fogbell/internal/metrics"
-	"github.com/fogbell-dev/fogbell/internal/render"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/slacktest"
-	"github.com/fogbell-dev/fogbell/internal/state"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/config"
+	"github.com/webgrip/fogbell/internal/metrics"
+	"github.com/webgrip/fogbell/internal/render"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/slacktest"
+	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 const baseConfig = `

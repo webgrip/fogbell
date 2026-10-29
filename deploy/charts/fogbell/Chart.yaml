@@ -4,8 +4,8 @@ description: One Slack thread per Alertmanager incident, with buttons that act o
 type: application
 version: 0.0.0
 appVersion: 0.0.0
-home: https://github.com/fogbell-dev/fogbell
+home: https://github.com/webgrip/fogbell
 sources:
-  - https://github.com/fogbell-dev/fogbell
+  - https://github.com/webgrip/fogbell
 keywords: [alertmanager, slack, incidents, alerting]
 kubeVersion: ">=1.27.0-0"

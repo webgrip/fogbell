@@ -11,8 +11,8 @@ import (
 	"image/png"
 	"math"
 
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/spark"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/spark"
 )
 
 // Points is how many points a chart draws.

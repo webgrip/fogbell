@@ -30,8 +30,8 @@ The `Release` workflow runs semantic-release and hands the new tag to `Publish`,
    and an SPDX SBOM per archive, signs `checksums.txt` keylessly, and attaches everything to the
    GitHub release;
 3. builds the image with ko on `cgr.dev/chainguard/static` for linux/amd64 and linux/arm64, with an
-   SPDX SBOM, pushes it to `ghcr.io/fogbell-dev/fogbell:<version>` and signs it;
-4. packages the chart at the tag's version, pushes it to `oci://ghcr.io/fogbell-dev/charts/fogbell`
+   SPDX SBOM, pushes it to `ghcr.io/webgrip/fogbell:<version>` and signs it;
+4. packages the chart at the tag's version, pushes it to `oci://ghcr.io/webgrip/charts/fogbell`
    and signs it by digest.
 
 A failed publish is rerun with the `Publish` workflow's manual trigger and the tag.
@@ -41,11 +41,11 @@ A failed publish is rerun with the `Publish` workflow's manual trigger and the t
 ```sh
 cosign verify-blob checksums.txt \
   --bundle checksums.txt.sigstore.json \
-  --certificate-identity-regexp '^https://github.com/fogbell-dev/fogbell/\.github/workflows/publish\.yml@' \
+  --certificate-identity-regexp '^https://github.com/webgrip/fogbell/\.github/workflows/publish\.yml@' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 sha256sum --ignore-missing -c checksums.txt
 
-cosign verify ghcr.io/fogbell-dev/fogbell:0.1.0 \
-  --certificate-identity-regexp '^https://github.com/fogbell-dev/fogbell/\.github/workflows/publish\.yml@' \
+cosign verify ghcr.io/webgrip/fogbell:0.1.0 \
+  --certificate-identity-regexp '^https://github.com/webgrip/fogbell/\.github/workflows/publish\.yml@' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```

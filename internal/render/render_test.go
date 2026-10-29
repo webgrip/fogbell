@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/config"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/config"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/state"
 )
 
 const cfgText = `

@@ -51,7 +51,7 @@ escalates to the person on call from a roster.
 2. Install the chart with your Alertmanager and channels:
 
    ```sh
-   helm install fogbell oci://ghcr.io/fogbell-dev/charts/fogbell -n monitoring \
+   helm install fogbell oci://ghcr.io/webgrip/charts/fogbell -n monitoring \
      --set config.alertmanager.url=http://alertmanager-operated:9093 \
      --set 'config.channels.alerts={alerts}'
    ```

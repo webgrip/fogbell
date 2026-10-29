@@ -8,14 +8,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/chart"
-	"github.com/fogbell-dev/fogbell/internal/format"
-	"github.com/fogbell-dev/fogbell/internal/promql"
-	"github.com/fogbell-dev/fogbell/internal/redact"
-	"github.com/fogbell-dev/fogbell/internal/spark"
-	"github.com/fogbell-dev/fogbell/internal/state"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/chart"
+	"github.com/webgrip/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/promql"
+	"github.com/webgrip/fogbell/internal/redact"
+	"github.com/webgrip/fogbell/internal/spark"
+	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 const (

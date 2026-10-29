@@ -7,7 +7,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/fogbell-dev/fogbell/internal/format"
+	"github.com/webgrip/fogbell/internal/format"
 )
 
 const bars = "▁▂▃▄▅▆▇█"

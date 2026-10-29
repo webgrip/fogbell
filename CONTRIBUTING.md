@@ -27,6 +27,6 @@ with `git rebase --signoff development`.
    needs an ADR in `docs/adrs/`. A change to what a message says changes its tests on purpose.
 4. Read [AGENTS.md](AGENTS.md) for the repository's conventions.
 
-Report bugs and ideas in [GitHub Issues](https://github.com/fogbell-dev/fogbell/issues) and
+Report bugs and ideas in [GitHub Issues](https://github.com/webgrip/fogbell/issues) and
 vulnerabilities as [SECURITY.md](SECURITY.md) says. Everyone taking part follows the
 [code of conduct](CODE_OF_CONDUCT.md).

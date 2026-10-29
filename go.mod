@@ -1,4 +1,4 @@
-module github.com/fogbell-dev/fogbell
+module github.com/webgrip/fogbell
 
 go 1.26.0
 

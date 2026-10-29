@@ -15,12 +15,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fogbell-dev/fogbell/internal/config"
-	"github.com/fogbell-dev/fogbell/internal/engine"
-	"github.com/fogbell-dev/fogbell/internal/metrics"
-	"github.com/fogbell-dev/fogbell/internal/server"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/config"
+	"github.com/webgrip/fogbell/internal/engine"
+	"github.com/webgrip/fogbell/internal/metrics"
+	"github.com/webgrip/fogbell/internal/server"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 var version = "dev"

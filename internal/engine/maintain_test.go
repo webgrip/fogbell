@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/slack"
-	"github.com/fogbell-dev/fogbell/internal/state"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 func (h *harness) maintain() []string { return h.e.Maintain(context.Background()) }

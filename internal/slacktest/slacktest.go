@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fogbell-dev/fogbell/internal/slack"
+	"github.com/webgrip/fogbell/internal/slack"
 )
 
 // Reply is a thread reply.

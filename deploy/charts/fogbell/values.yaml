@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/fogbell-dev/fogbell
+  repository: ghcr.io/webgrip/fogbell
   # Defaults to the chart's appVersion. Pin a digest with `digest`.
   tag: ""
   digest: ""

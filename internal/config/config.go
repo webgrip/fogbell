@@ -17,7 +17,7 @@ import (
 
 	"go.yaml.in/yaml/v3"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/alert"
 )
 
 // Config is the whole configuration file. docs/configuration.md describes every field.

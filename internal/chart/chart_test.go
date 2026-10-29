@@ -5,7 +5,7 @@ import (
 	"image/png"
 	"testing"
 
-	"github.com/fogbell-dev/fogbell/internal/spark"
+	"github.com/webgrip/fogbell/internal/spark"
 )
 
 func TestAxisText(t *testing.T) {

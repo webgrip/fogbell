@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fogbell-dev/fogbell/internal/alert"
-	"github.com/fogbell-dev/fogbell/internal/chart"
-	"github.com/fogbell-dev/fogbell/internal/upstream"
+	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/chart"
+	"github.com/webgrip/fogbell/internal/upstream"
 )
 
 var starts = alert.ParseTime("2026-10-27T08:15:00Z")
