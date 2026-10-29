@@ -1,0 +1,76 @@
+image:
+  repository: ghcr.io/fogbell-dev/fogbell
+  # Defaults to the chart's appVersion. Pin a digest with `digest`.
+  tag: ""
+  digest: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# fogbell's configuration file, as YAML (docs/configuration.md). The chart fills in the paths of the
+# files it mounts; everything else is yours. alertmanager.url is required.
+config:
+  alertmanager:
+    url: http://alertmanager-operated.monitoring.svc:9093
+  channels:
+    alerts: []
+    digest: []
+
+# The on-call roster (docs/configuration.md#on-call). Empty: no escalation.
+roster: {}
+#  people: [U012ABCDEF, U034GHIJKL]
+#  rotation_start: "2026-11-02"
+#  escalate_after_minutes: 15
+
+slack:
+  # A Secret with the bot token under `bot-token` and, optionally, the signing secret under
+  # `signing-secret`. Without the signing secret fogbell runs with the buttons that act hidden.
+  existingSecret: fogbell-slack
+
+tickets:
+  # A Secret with a ClickUp API token under `clickup-token`. Optional: without it the ticket button
+  # is hidden. Set config.tickets.clickup.list as well.
+  clickupSecret: ""
+
+flux:
+  # Read Flux Kustomizations and HelmReleases for the "change before this alert" line. Grants get
+  # and list on those two kinds, cluster-wide, and nothing else. Also set config.enrich.flux.enabled.
+  rbac: false
+
+service:
+  port: 8080
+
+serviceMonitor:
+  # A Prometheus Operator ServiceMonitor for /metrics.
+  enabled: false
+  interval: 60s
+  labels: {}
+
+podAnnotations: {}
+podLabels: {}
+priorityClassName: ""
+nodeSelector: {}
+tolerations: []
+affinity: {}
+# For example `options: [{name: ndots, value: "1"}]` when an FQDN egress policy must match slack.com.
+dnsConfig: {}
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]

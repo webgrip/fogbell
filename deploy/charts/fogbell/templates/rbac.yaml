@@ -1,0 +1,32 @@
+{{- if .Values.flux.rbac }}
+# get and list on Flux Kustomizations and HelmReleases: their status.history says what was applied
+# and when. No Secrets, no Pods, no writes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "fogbell.fullname" . }}-flux-reader
+  labels:
+    {{- include "fogbell.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["get", "list"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "fogbell.fullname" . }}-flux-reader
+  labels:
+    {{- include "fogbell.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "fogbell.fullname" . }}-flux-reader
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "fogbell.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

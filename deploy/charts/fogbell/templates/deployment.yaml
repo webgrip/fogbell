@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fogbell.fullname" . }}
+  labels:
+    {{- include "fogbell.labels" . | nindent 4 }}
+spec:
+  # One replica: the per-incident lock lives in memory (docs/adrs/0003). Alertmanager retries a
+  # notification fogbell could not take, so a restart delays a message and loses none.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "fogbell.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fogbell.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "fogbell.fullname" . }}
+      automountServiceAccountToken: {{ .Values.flux.rbac }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: fogbell
+          image: {{ include "fogbell.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["-config", "/etc/fogbell/config.yaml"]
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 15
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            periodSeconds: 30
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - {name: config, mountPath: /etc/fogbell, readOnly: true}
+            - {name: slack, mountPath: /var/run/fogbell/slack, readOnly: true}
+            {{- if .Values.tickets.clickupSecret }}
+            - {name: clickup, mountPath: /var/run/fogbell/clickup, readOnly: true}
+            {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "fogbell.fullname" . }}
+        - name: slack
+          secret:
+            secretName: {{ required "slack.existingSecret names the Secret with the bot token" .Values.slack.existingSecret }}
+        {{- if .Values.tickets.clickupSecret }}
+        - name: clickup
+          secret:
+            secretName: {{ .Values.tickets.clickupSecret }}
+            optional: true
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
