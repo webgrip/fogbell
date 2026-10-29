@@ -1,0 +1,36 @@
+{
+  "version": "4",
+  "groupKey": "{}:{alertname=\"X\"}",
+  "receiver": "warnings",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "TargetDown",
+        "severity": "warning",
+        "namespace": "monitoring",
+        "pod": "kube-state-metrics-0",
+        "node": "worker1"
+      },
+      "annotations": {
+        "summary": "A scrape target is down",
+        "description": "kube-state-metrics does not answer."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "kube-state-metrics-0"
+    }
+  ],
+  "groupLabels": {
+    "alertname": "TargetDown"
+  },
+  "commonLabels": {
+    "alertname": "TargetDown",
+    "severity": "warning",
+    "namespace": "monitoring"
+  },
+  "commonAnnotations": {},
+  "externalURL": "http://alertmanager.example"
+}

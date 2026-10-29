@@ -1,0 +1,88 @@
+# A full fogbell configuration. Every field is described in docs/configuration.md; anything left out
+# takes its default.
+listen: ":8080"
+
+slack:
+  tokenFile: /var/run/fogbell/slack/bot-token
+  signingSecretFile: /var/run/fogbell/slack/signing-secret
+  # Read incident threads another tool wrote with the same state fields, and take them over.
+  # adoptEvents: [previous_tool_alert]
+
+alertmanager:
+  url: http://alertmanager-operated.monitoring.svc:9093
+
+channels:
+  # Every channel an Alertmanager webhook posts to (?channel=<name>): maintenance and the noise report
+  # look across these.
+  alerts: [alerts-page, alerts-warnings, alerts-teams]
+  digest: [alerts-warnings, alerts-teams]
+  noiseReport: alerts-hygiene
+  silenceOverview: alerts-warnings
+  # For a receiver whose webhook URL carries &by_team=1.
+  teams:
+    payments: payments-alerts
+  teamLabel: team
+
+incidents:
+  pageReceivers: [page]
+  reopenWindow: 1h
+  icons:
+    - match: {alertgroup: "audit|security"}
+      icon: "🔐"
+    - match: {audience: hygiene}
+      icon: "🧹"
+  fold:
+    parentAlertname: KubeNodeNotReady
+    label: node
+    window: 30m
+
+objects:
+  - name: pod
+    labels: [namespace, pod]
+    exclude:
+      pod: "^(kube-state-metrics|node-exporter)-"
+    button: Logs
+    url: 'https://grafana.example.com/explore?left={{ printf `{"queries":[{"expr":"{namespace=%q,pod=%q}"}],"range":{"from":"%d","to":"now"}}` .Labels.namespace .Labels.pod .FromMs | queryescape }}'
+  - name: node
+    labels: [node]
+    button: Node
+    url: "https://grafana.example.com/d/nodes?var-node={{ .Value | queryescape }}&from={{ .FromMs }}&to=now"
+  - name: project
+    labels: [project]
+    button: Repository
+    url: "https://git.example.com/{{ .Value }}"
+
+links:
+  allAlerts: https://grafana.example.com/alerting/list
+  ask: "https://chat.example.com/?q={{ .Prompt | queryescape }}"
+  askLabel: Ask in chat
+
+schedule:
+  timezone: Europe/Amsterdam
+  digestAt: "09:00"
+  noiseReportDay: Monday
+
+onCall:
+  rosterFile: /etc/fogbell/roster.yaml
+  handoverAt: "09:00"
+
+enrich:
+  metrics:
+    url: http://vmsingle.monitoring.svc:8429
+  ruler:
+    url: http://vmalert.monitoring.svc:8080
+    generatorHost: "^vmalert-"
+  logs:
+    url: http://victorialogs.monitoring.svc:9428
+  related: true
+  charts: true
+  flux:
+    enabled: true
+    window: 1h
+    commitURL: https://git.example.com/platform/cluster/-/commit/
+    pathURL: https://git.example.com/platform/cluster/-/commits/main/
+
+tickets:
+  clickup:
+    tokenFile: /var/run/fogbell/clickup/clickup-token
+    list: "900000000000"

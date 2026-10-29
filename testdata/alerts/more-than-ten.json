@@ -1,0 +1,234 @@
+{
+  "version": "4",
+  "groupKey": "{}:{alertname=\"X\"}",
+  "receiver": "warnings",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-0"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-0 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-0"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-1"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-1 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-1"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-2"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-2 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-2"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-3"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-3 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-3"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-4"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-4 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-4"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-5"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-5 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-5"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-6"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-6 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-6"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-7"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-7 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-7"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-8"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-8 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-8"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-9"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-9 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-9"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-10"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-10 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-10"
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodCrashLooping",
+        "severity": "warning",
+        "namespace": "shop",
+        "pod": "web-11"
+      },
+      "annotations": {
+        "summary": "A container keeps restarting",
+        "description": "web-11 restarted.",
+        "action": "Read the previous container's log."
+      },
+      "startsAt": "2026-10-27T08:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "",
+      "fingerprint": "web-11"
+    }
+  ],
+  "groupLabels": {
+    "alertname": "PodCrashLooping"
+  },
+  "commonLabels": {
+    "alertname": "PodCrashLooping",
+    "severity": "warning",
+    "namespace": "shop"
+  },
+  "commonAnnotations": {},
+  "externalURL": "http://alertmanager.example"
+}
