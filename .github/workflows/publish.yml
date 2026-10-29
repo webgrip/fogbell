@@ -1,0 +1,62 @@
+name: Publish
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: Tag the release workflow just cut
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag whose publication is missing, such as v0.1.0
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  publish:
+    if: github.repository == 'fogbell-dev/fogbell'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    concurrency:
+      group: fogbell-publish-${{ inputs.tag }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    env:
+      TAG: ${{ inputs.tag }}
+      CHART_REPO: oci://ghcr.io/${{ github.repository_owner }}/charts
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
+        with:
+          version: 2026.9.18
+          cache: false
+      - run: mise run setup
+      - run: mise run verify
+      - name: Log in to GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.actor }}
+        run: echo "$GH_TOKEN" | docker login ghcr.io --username "$ACTOR" --password-stdin
+      - name: Build, sign and attach the binaries, checksums and SBOMs, and push and sign the image
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GORELEASER_CURRENT_TAG: ${{ inputs.tag }}
+        run: mise exec -- goreleaser release --clean
+      - name: Package, push and sign the chart at the release version
+        run: |
+          version="${TAG#v}"
+          mise exec -- helm package deploy/charts/fogbell --version "$version" --app-version "$version" --destination dist/chart
+          out="$(mise exec -- helm push "dist/chart/fogbell-${version}.tgz" "$CHART_REPO" 2>&1)"
+          echo "$out"
+          digest="$(grep -oE 'sha256:[0-9a-f]{64}' <<<"$out" | head -1)"
+          test -n "$digest"
+          mise exec -- cosign sign --yes "${CHART_REPO#oci://}/fogbell@${digest}"
