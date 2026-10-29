@@ -1,0 +1,19 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'github>webgrip/renovate-config:profile-library#v1.18.0',
+    'github>webgrip/renovate-config:golang#v1.18.0',
+  ],
+  packageRules: [
+    {
+      description: 'For Go modules Renovate compares the go directive with each release\'s as exact versions, though both are minimums, and drops releases that declare another one. Minimal version selection already resolves the toolchain floor, and go mod tidy in the branch fails if a release needs a newer one.',
+      matchManagers: ['gomod'],
+      constraintsFiltering: 'none',
+    },
+    {
+      description: 'The MetricsQL parser decides what a sparkline draws, and a release can change how it prints an expression, which the promql tests pin. Review each bump on its own.',
+      matchPackageNames: ['github.com/VictoriaMetrics/metricsql'],
+      automerge: false,
+    },
+  ],
+}

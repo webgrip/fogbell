@@ -1,0 +1,11 @@
+fogbell
+Copyright 2026 The fogbell Authors
+
+This product is licensed under the Apache License, Version 2.0 (LICENSE).
+
+The documentation (Markdown files and images under docs/, as REUSE.toml lists)
+is licensed under the Creative Commons Attribution 4.0 International licence,
+LICENSES/CC-BY-4.0.txt. Code samples in it are also available under the
+Apache License 2.0.
+
+fogbell is original work. It takes no code from Alertmanager, Grafana OnCall, Keep or Robusta.

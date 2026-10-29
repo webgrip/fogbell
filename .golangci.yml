@@ -1,0 +1,32 @@
+version: "2"
+run:
+  timeout: 5m
+linters:
+  default: standard
+  enable:
+    - gosec
+    - revive
+    - staticcheck
+    - errcheck
+    - govet
+  settings:
+    revive:
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: var-naming
+        - name: error-strings
+        - name: error-return
+        - name: unused-parameter
+  exclusions:
+    rules:
+      # fogbell reads the files its configuration names: the config, token, signing secret and roster files.
+      - text: "G304|G703"
+        linters:
+          - gosec
+      - path: _test\.go
+        linters:
+          - gosec
+formatters:
+  enable:
+    - gofmt

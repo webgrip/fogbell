@@ -1,0 +1,16 @@
+version = 1
+SPDX-PackageName = "fogbell"
+SPDX-PackageSupplier = "The fogbell Authors"
+SPDX-PackageDownloadLocation = "https://github.com/fogbell-dev/fogbell"
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 The fogbell Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["**/*.md", "docs/**/*.png", "docs/**/*.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 The fogbell Authors"
+SPDX-License-Identifier = "CC-BY-4.0"

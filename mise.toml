@@ -1,0 +1,25 @@
+[settings]
+lockfile = true
+
+[tools]
+go = "1.27.3"
+golangci-lint = "2.15.0"
+goreleaser = "2.19.0"
+cosign = "3.1.4"
+helm = "4.3.0"
+"aqua:anchore/syft" = "1.54.1"
+actionlint = "1.7.12"
+shellcheck = "0.11.0"
+uv = "0.12.22"
+
+[tasks.setup]
+run = "mise install"
+description = "Install the pinned toolchain"
+
+[tasks.verify]
+run = "bash scripts/verify.sh"
+description = "Format, vet, build, test, lint, and check the chart offline"
+
+[tasks.reuse]
+run = "uv tool run --from 'reuse[charset-normalizer]==6.2.0' reuse lint"
+description = "Check every file carries a licence and copyright"
