@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/webgrip/fogbell
+  repository: harbor.webgrip.dev/webgrip/fogbell
   # Defaults to the chart's appVersion. Pin a digest with `digest`.
   tag: ""
   digest: ""
@@ -31,6 +31,16 @@ tickets:
   # A Secret with a ClickUp API token under `clickup-token`. Optional: without it the ticket button
   # is hidden. Set config.tickets.clickup.list as well.
   clickupSecret: ""
+
+investigate:
+  # A Secret with a Ploeg operator-consumer token under `ploeg-token`. Optional: without it the
+  # investigate button is hidden. Set config.investigate.ploeg (url, team, target) as well.
+  ploegSecret: ""
+
+# More Secrets to mount, for example the signing secrets of event webhooks:
+#   - {secret: fogbell-events, mountPath: /var/run/fogbell/events}
+# and point config.events.webhooks[].secretFile at a key under the mount path.
+extraSecrets: []
 
 flux:
   # Read Flux Kustomizations and HelmReleases for the "change before this alert" line. Grants get

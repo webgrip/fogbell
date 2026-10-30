@@ -39,5 +39,8 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" }}
 {{- if .Values.tickets.clickupSecret -}}
 {{- $_ := set $files "tickets" (dict "clickup" (dict "tokenFile" "/var/run/fogbell/clickup/clickup-token")) -}}
 {{- end -}}
+{{- if .Values.investigate.ploegSecret -}}
+{{- $_ := set $files "investigate" (dict "ploeg" (dict "tokenFile" "/var/run/fogbell/ploeg/ploeg-token")) -}}
+{{- end -}}
 {{- mustMergeOverwrite (deepCopy .Values.config) $files | toYaml -}}
 {{- end -}}
