@@ -24,12 +24,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  static-analysis:
-    name: Static analysis
-    uses: webgrip/workflows/.forgejo/workflows/go-application-static-analysis.yml@cc494a9384d6e5edc88031b8d32f6de4de908139 # v3.3.0
-    with:
-      go-version: '1.27.3'
-
   tests:
     name: Tests
     uses: webgrip/workflows/.forgejo/workflows/go-application-tests.yml@cc494a9384d6e5edc88031b8d32f6de4de908139 # v3.3.0
@@ -37,14 +31,16 @@ jobs:
       go-version: '1.27.3'
 
   verify:
-    name: Verify (race tests, chart, configuration, REUSE, image build)
+    name: Verify (gofmt, vet, golangci-lint, race tests, chart, configuration, REUSE, image build)
     runs-on: docker
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - uses: https://github.com/jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
+      - uses: https://github.com/jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
         with:
+          version: 2026.10.19
           cache: false
+          github_token: ''
       - run: mise run verify
       - run: mise run reuse
       - name: The image builds
@@ -70,7 +66,7 @@ jobs:
 
   release:
     name: Semantic Release
-    needs: [static-analysis, tests, verify]
+    needs: [tests, verify]
     if: always() && needs.verify.result == 'success' && needs.tests.result == 'success' && github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: docker
     container:
