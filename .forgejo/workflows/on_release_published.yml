@@ -48,7 +48,23 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: v${{ needs.parse-release-tag.outputs.version }}
+      # Harbor tags are immutable: a retry after a failed signing signs the pushed image, not a rebuild.
+      - name: Is this version already in Harbor?
+        id: published
+        shell: bash
+        env:
+          IMAGE: harbor.webgrip.dev/webgrip/fogbell:${{ needs.parse-release-tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$REGISTRY_TOKEN" | docker login harbor.webgrip.dev -u "$REGISTRY_USERNAME" --password-stdin >/dev/null
+          if docker buildx imagetools inspect "$IMAGE" >/dev/null 2>&1; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "$IMAGE is already in Harbor; signing it instead of rebuilding." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Build and push (Harbor)
+        if: steps.published.outputs.present != 'true'
         uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/docker-build-push-registry-fast@v3.3.0
         with:
           registry: harbor.webgrip.dev
