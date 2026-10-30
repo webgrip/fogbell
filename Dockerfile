@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 ARG REGISTRY_DOCKERHUB=docker.io
 # renovate: datasource=docker depName=golang versioning=docker
-ARG GO_IMAGE=${REGISTRY_DOCKERHUB}/library/golang:1.27.3-alpine
+ARG GO_IMAGE=${REGISTRY_DOCKERHUB}/library/golang:1.27.3-alpine@sha256:d200d2dd76b03a99b52651fd1325aff7dcd35422c35c01bac56571b0507f3deb
 # renovate: datasource=docker depName=gcr.io/distroless/static-debian12 versioning=docker
-ARG RUNTIME_IMAGE=gcr.io/distroless/static-debian12:nonroot
+ARG RUNTIME_IMAGE=gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
 
 FROM ${GO_IMAGE} AS build
 ARG IMAGE_VERSION=dev
