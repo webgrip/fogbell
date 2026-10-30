@@ -1,0 +1,90 @@
+name: On Release Published
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, e.g. v0.1.0"
+        required: true
+        type: string
+
+concurrency:
+  group: release-publish-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  parse-release-tag:
+    runs-on: docker
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      latest: ${{ steps.parse.outputs.latest }}
+      created: ${{ steps.parse.outputs.created }}
+    steps:
+      - id: parse
+        shell: bash
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v(.+)$ ]] || { echo "Unsupported tag: $TAG (expected v<semver>)" >&2; exit 1; }
+          version="${BASH_REMATCH[1]}"
+          latest=true
+          [[ "$version" == *-* ]] && latest=false
+          { echo "version=$version"; echo "latest=$latest"; echo "created=$(date -u +%Y-%m-%dT%H:%M:%SZ)"; } >> "$GITHUB_OUTPUT"
+
+  image:
+    name: Build, sign and attest the image (Harbor)
+    needs: [parse-release-tag]
+    runs-on: docker
+    enable-openid-connect: true
+    permissions:
+      contents: read
+    env:
+      REGISTRY_USERNAME: ${{ secrets.HARBOR_ROBOT_USER }}
+      REGISTRY_TOKEN: ${{ secrets.HARBOR_ROBOT_TOKEN }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: v${{ needs.parse-release-tag.outputs.version }}
+      - name: Build and push (Harbor)
+        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/docker-build-push-registry-fast@v3.3.0
+        with:
+          registry: harbor.webgrip.dev
+          docker-context: "."
+          docker-file: Dockerfile
+          docker-target: app
+          platforms: "linux/amd64,linux/arm64"
+          annotations: |
+            index:org.opencontainers.image.source=https://forgejo.webgrip.dev/webgrip/fogbell
+            index:org.opencontainers.image.licenses=Apache-2.0
+          docker-build-args: |
+            IMAGE_CREATED=${{ needs.parse-release-tag.outputs.created }}
+            IMAGE_VERSION=${{ needs.parse-release-tag.outputs.version }}
+            IMAGE_REVISION=${{ github.sha }}
+            REGISTRY_DOCKERHUB=harbor.webgrip.dev/dockerhub
+          docker-tags: |
+            webgrip/fogbell:${{ needs.parse-release-tag.outputs.version }}
+            ${{ needs.parse-release-tag.outputs.latest == 'true' && 'webgrip/fogbell:latest' || '' }}
+      - name: Sign, attest and SBOM (Harbor)
+        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/cosign-sign-attest@v3.3.0
+        with:
+          registry: harbor.webgrip.dev
+          image-name: harbor.webgrip.dev/webgrip/fogbell
+          image-version: ${{ needs.parse-release-tag.outputs.version }}
+
+  chart:
+    name: Push the chart (Harbor)
+    needs: [parse-release-tag, image]
+    uses: webgrip/workflows/.forgejo/workflows/helm-chart-push.yml@cc494a9384d6e5edc88031b8d32f6de4de908139 # v3.3.0
+    secrets:
+      REGISTRY_USERNAME: ${{ secrets.HARBOR_ROBOT_USER }}
+      REGISTRY_TOKEN: ${{ secrets.HARBOR_ROBOT_TOKEN }}
+    with:
+      registry: harbor.webgrip.dev
+      path: deploy/charts/fogbell
+      name: fogbell
+      version: ${{ needs.parse-release-tag.outputs.version }}
+      ref: v${{ needs.parse-release-tag.outputs.version }}
+      oci-path: webgrip/charts

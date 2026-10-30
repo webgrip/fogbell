@@ -1,0 +1,7 @@
+.git
+dist
+deploy
+docs
+*.md
+.forgejo
+.github

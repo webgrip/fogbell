@@ -4,11 +4,7 @@ lockfile = true
 [tools]
 go = "1.27.3"
 golangci-lint = "2.15.0"
-goreleaser = "2.19.0"
-cosign = "3.1.4"
 helm = "4.3.0"
-"aqua:anchore/syft" = "1.54.1"
-actionlint = "1.7.12"
 shellcheck = "0.11.0"
 uv = "0.12.22"
 
@@ -23,3 +19,15 @@ description = "Format, vet, build, test, lint, and check the chart offline"
 [tasks.reuse]
 run = "uv tool run --from 'reuse[charset-normalizer]==6.2.0' reuse lint"
 description = "Check every file carries a licence and copyright"
+
+[tasks.agents-setup]
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd setup"
+description = "Everything a developer needs once: tools, the agent files, and a diagnosis of this machine"
+
+[tasks.agents-install]
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd install"
+description = "Install the pinned agent packages and compile .apm into .claude/rules and AGENTS.md"
+
+[tasks.agents-check]
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd check"
+description = "Fail when an agent file breaks the standard"
