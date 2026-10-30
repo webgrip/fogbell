@@ -1,7 +1,7 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    'local>webgrip/renovate-config:profile-library#v1.19.1',
+    'local>webgrip/renovate-config:profile-app#v1.19.1',
     'local>webgrip/renovate-config:golang#v1.19.1',
     'local>webgrip/renovate-config:apm#v1.19.1',
   ],
