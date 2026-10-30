@@ -14,6 +14,7 @@ on:
       - 'go.sum'
       - 'Dockerfile'
       - 'mise.toml'
+      - 'mise.lock'
       - '.golangci.yml'
       - '.releaserc.cjs'
       - '.forgejo/workflows/on_source_change.yml'
@@ -24,12 +25,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  tests:
-    name: Tests
-    uses: webgrip/workflows/.forgejo/workflows/go-application-tests.yml@cc494a9384d6e5edc88031b8d32f6de4de908139 # v3.3.0
-    with:
-      go-version: '1.27.3'
-
   verify:
     name: Verify (gofmt, vet, golangci-lint, race tests, chart, configuration, REUSE, image build)
     runs-on: docker
@@ -66,8 +61,8 @@ jobs:
 
   release:
     name: Semantic Release
-    needs: [tests, verify]
-    if: always() && needs.verify.result == 'success' && needs.tests.result == 'success' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [verify]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: docker
     container:
       image: harbor.webgrip.dev/webgrip/semantic-release:2.1.0@sha256:9fa6ddc14d1a126fe14a7a63b88bf49cb2ee9053b88b4939db60d7761d492d2d
