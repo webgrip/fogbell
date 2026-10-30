@@ -142,3 +142,27 @@ Every lookup is optional, read-only and never fails an incident.
 
 The ticket is assigned to the ClickUp member whose address matches the Slack user who pressed (needs
 `users:read.email`).
+
+## `investigate.ploeg`
+
+| Field | What |
+| --- | --- |
+| `url` | Ploeg's API base; with it, the investigate button appears while the token file holds a token |
+| `tokenFile` | File holding an operator-consumer token with execute permission for the team |
+| `team` | The Ploeg team that investigates |
+| `target` | The registered Work Target the team works on |
+| `budgetUSD` | Each investigation's budget; default the consumer's maximum |
+| `model` | A model alias every Run uses, when the team's policy lists it |
+| `console` | Base of a person-facing link to a Work Item, such as an Unfold page; the id is appended |
+
+See [integrations](integrations.md#investigations-with-ploeg).
+
+## `events.webhooks`
+
+A list; each entry receives every step as a CloudEvent.
+
+| Field | What |
+| --- | --- |
+| `url` | Where events are posted |
+| `secretFile` | File holding a secret; with it, `X-Fogbell-Signature` signs the body |
+| `types` | Steps to send, default all: `opened`, `updated`, `acknowledged`, `silenced`, `unsilenced`, `resolved`, `reopened`, `ticketed`, `investigated` |

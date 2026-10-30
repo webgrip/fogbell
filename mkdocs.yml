@@ -1,0 +1,17 @@
+site_name: fogbell
+repo_url: https://forgejo.webgrip.dev/webgrip/fogbell
+edit_uri: src/branch/main/docs/
+docs_dir: docs
+plugins:
+  - techdocs-core
+nav:
+  - Overview: index.md
+  - Configuration: configuration.md
+  - Integrations: integrations.md
+  - The Slack app: slack-app.md
+  - Design: design.md
+  - Taking over existing threads: adopting.md
+  - Metrics: metrics.md
+  - Releasing: releasing.md
+  - Decisions: adrs/README.md
+  - Research: research/2026-10-29-landscape.md

@@ -1,20 +1,17 @@
 # Releasing
 
-fogbell is versioned by [semantic-release](https://semantic-release.gitbook.io/) from Conventional
-Commits ([ADR-0005](adrs/0005-semantic-release-cuts-tags-and-goreleaser-publishes-them.md)).
+fogbell lives on [forgejo.webgrip.dev/webgrip/fogbell](https://forgejo.webgrip.dev/webgrip/fogbell),
+is push-mirrored to [github.com/webgrip/fogbell](https://github.com/webgrip/fogbell), and is released
+by Forgejo Actions ([ADR-0007](adrs/0007-forgejo-leads-and-releases-go-to-harbor.md)).
 
-| Branch | Cuts | Example |
-| --- | --- | --- |
-| `development` (trunk; pull requests land here) | a release candidate on every releasable merge | `v0.1.0-rc.1` |
-| `main` | a stable release when `development` is promoted to it | `v0.1.0` |
-
-`feat` cuts a minor, `fix`, `perf`, `refactor`, `revert` and dependency bumps cut a patch; `docs`,
-`test`, `ci` and `chore` cut nothing. Releases are tags only: nothing is committed back.
+`main` is the trunk. semantic-release cuts a version from Conventional Commits on every push to it:
+`feat` cuts a minor; `fix`, `perf`, `refactor`, `revert` and dependency bumps a patch; `docs`, `test`,
+`ci` and `chore` nothing. Releases are tags only: nothing is committed back.
 
 ## Before the first release: the seed tag
 
-semantic-release makes its first release `1.0.0` whatever the commits say. To start at `v0.1.0`, a
-maintainer pushes a `v0.0.0` tag on the root commit once, before the first merge to `development`:
+semantic-release makes its first release `1.0.0` whatever the commits say. To start at `v0.1.0`, push a
+`v0.0.0` tag on the root commit once, before the first push to `main` that should release:
 
 ```sh
 git tag v0.0.0 "$(git rev-list --max-parents=0 HEAD)"
@@ -23,29 +20,22 @@ git push origin v0.0.0
 
 ## What a release publishes
 
-The `Release` workflow runs semantic-release and hands the new tag to `Publish`, which:
+`On Release Published` runs on the release semantic-release created:
 
-1. runs `mise run verify` on the tag;
-2. builds `fogbell` for linux and darwin on amd64 and arm64 with GoReleaser, writes `checksums.txt`
-   and an SPDX SBOM per archive, signs `checksums.txt` keylessly, and attaches everything to the
-   GitHub release;
-3. builds the image with ko on `cgr.dev/chainguard/static` for linux/amd64 and linux/arm64, with an
-   SPDX SBOM, pushes it to `ghcr.io/webgrip/fogbell:<version>` and signs it;
-4. packages the chart at the tag's version, pushes it to `oci://ghcr.io/webgrip/charts/fogbell`
-   and signs it by digest.
+1. builds the image from the `Dockerfile` for linux/amd64 and linux/arm64 and pushes
+   `harbor.webgrip.dev/webgrip/fogbell:<version>` (and `:latest` for a stable version);
+2. signs and attests it, with an SBOM, through the shared cosign composite;
+3. pushes the chart at the same version to `oci://harbor.webgrip.dev/webgrip/charts/fogbell`.
 
-A failed publish is rerun with the `Publish` workflow's manual trigger and the tag.
+A failed publish is rerun with the workflow's manual trigger and the tag.
 
-## Verify a download or the image
+## Verify the image
 
 ```sh
-cosign verify-blob checksums.txt \
-  --bundle checksums.txt.sigstore.json \
-  --certificate-identity-regexp '^https://github.com/webgrip/fogbell/\.github/workflows/publish\.yml@' \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
-sha256sum --ignore-missing -c checksums.txt
-
-cosign verify ghcr.io/webgrip/fogbell:0.1.0 \
-  --certificate-identity-regexp '^https://github.com/webgrip/fogbell/\.github/workflows/publish\.yml@' \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+cosign verify harbor.webgrip.dev/webgrip/fogbell:0.1.0 \
+  --certificate-identity-regexp '^https://forgejo\.webgrip\.dev/webgrip/fogbell/' \
+  --certificate-oidc-issuer https://forgejo.webgrip.dev/api/actions
 ```
+
+The identity and issuer above are the Forgejo OIDC defaults; the cosign composite's documentation in
+`webgrip/workflows` is the authority if they differ.

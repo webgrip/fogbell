@@ -21,5 +21,7 @@ Evidence stays out of the record: research goes in `docs/research/YYYY-MM-DD-<to
 | [0002](0002-expressions-are-read-with-the-metricsql-parser.md) | A rule's expression is read with the MetricsQL parser, not by hand | accepted |
 | [0003](0003-one-replica-with-in-memory-locks.md) | One replica, with the per-incident lock in memory | accepted |
 | [0004](0004-everything-site-specific-is-configuration.md) | Everything site-specific is configuration, links are templates | accepted |
-| [0005](0005-semantic-release-cuts-tags-and-goreleaser-publishes-them.md) | semantic-release cuts tags; GoReleaser, ko and Helm publish them, signed keylessly | accepted |
+| [0005](0005-semantic-release-cuts-tags-and-goreleaser-publishes-them.md) | semantic-release cuts tags; GoReleaser, ko and Helm publish them, signed keylessly | superseded by 0007 |
 | [0006](0006-go.md) | fogbell is written in Go | accepted |
+| [0007](0007-forgejo-leads-and-releases-go-to-harbor.md) | Forgejo leads, releases go to Harbor, GitHub is a mirror | accepted |
+| [0008](0008-integrations-are-ports-with-adapters.md) | Integrations are ports with adapters; the engine knows only the ports | accepted |

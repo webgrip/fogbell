@@ -1,0 +1,40 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: fogbell
+  title: fogbell
+  description: One Slack thread per Alertmanager incident, with buttons that act on it.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    forgejo.webgrip.dev/project-slug: webgrip/fogbell
+  links:
+    - url: https://forgejo.webgrip.dev/webgrip/fogbell
+      title: Source
+    - url: https://github.com/webgrip/fogbell
+      title: GitHub mirror
+  tags: [go, alerting, slack, alertmanager]
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:webgrip
+  system: observability
+  providesApis: [fogbell-events]
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: fogbell-events
+  description: The CloudEvents fogbell sends for every incident step (docs/integrations.md).
+spec:
+  type: asyncapi
+  lifecycle: experimental
+  owner: group:webgrip
+  definition: |
+    asyncapi: 3.0.0
+    info: {title: fogbell incident events, version: 1.0.0}
+    channels:
+      incident:
+        address: dev.fogbell.incident.{step}
+        parameters:
+          step:
+            enum: [opened, updated, acknowledged, silenced, unsilenced, resolved, reopened, ticketed, investigated]

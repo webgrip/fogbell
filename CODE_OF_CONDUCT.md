@@ -7,7 +7,7 @@ behalf of the project.
 ## Report an incident
 
 Report privately to the [maintainers](MAINTAINERS.md) through GitHub's private reporting form
-([direct link](https://github.com/webgrip/fogbell/security/advisories/new)) and start the title
+([direct link](https://forgejo.webgrip.dev/webgrip/fogbell/issues/new)) and start the title
 with `Conduct:`. Only the maintainers can read it, and a conduct report is never published as an
 advisory. A maintainer answers within three business days. A maintainer who is the subject of a report,
 or close to it, takes no part in handling it.

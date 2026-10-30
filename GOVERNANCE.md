@@ -17,9 +17,9 @@ responders ([CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)).
 
 | Decision | Where | Who decides |
 | --- | --- | --- |
-| A code or documentation change | A pull request against `development` | A maintainer who did not write it. While there is one maintainer, that maintainer merges their own change once CI passes. |
+| A code or documentation change | A pull request against `main` | A maintainer who did not write it. While there is one maintainer, that maintainer merges their own change once CI passes. |
 | A change to the stored state schema or another architectural decision | A new ADR in [docs/adrs/](docs/adrs/README.md), proposed in a pull request | Maintainers by lazy consensus over seven days |
-| A stable release | Promoting `development` to `main` | A maintainer |
+| A stable release | A `feat` or `fix` merged to `main` | A maintainer |
 | Adding a maintainer | A public nomination issue, then a pull request to MAINTAINERS.md | The maintainers, once the nomination has been open seven days |
 | Changing this page | A pull request open for at least seven days | The maintainers |
 

@@ -15,18 +15,18 @@ AGPL or other copyleft incident tools; write it from the Slack and Alertmanager 
 Sign off every commit with `git commit -s` to certify the
 [Developer Certificate of Origin](https://developercertificate.org/). Do not sign off on another
 contributor's behalf. The `dco` CI job checks every commit in a pull request; fix a missing sign-off
-with `git rebase --signoff development`.
+with `git rebase --signoff main`.
 
 ## Workflow
 
 1. Install [mise](https://mise.jdx.dev/), then run `mise run setup` and `mise run verify`. They need no
    credentials.
-2. Open pull requests against `development`, with Conventional Commit messages. `feat` and `fix`
+2. Open pull requests against `main`, with Conventional Commit messages. `feat` and `fix`
    cut a release candidate when merged.
 3. A change to the state stored on Slack messages, or another decision that outlives the change,
    needs an ADR in `docs/adrs/`. A change to what a message says changes its tests on purpose.
 4. Read [AGENTS.md](AGENTS.md) for the repository's conventions.
 
-Report bugs and ideas in [GitHub Issues](https://github.com/webgrip/fogbell/issues) and
+Report bugs and ideas in [Forgejo issues](https://forgejo.webgrip.dev/webgrip/fogbell/issues) and
 vulnerabilities as [SECURITY.md](SECURITY.md) says. Everyone taking part follows the
 [code of conduct](CODE_OF_CONDUCT.md).

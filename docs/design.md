@@ -21,7 +21,11 @@ and was shown within `fold.window` is folded into that thread as a sub-line. Its
 stay there until the parent resolves.
 
 Work that waits on upstreams (logs, sparkline, history, neighbours, the Flux change, the chart) runs
-after the first post, beside the webhook Alertmanager is waiting on, and edits the message once.
+after the first post, beside the webhook Alertmanager is waiting on, and edits the message once. Each
+lookup is an enricher; one runner counts its outcome and never lets it fail the incident
+([ADR-0008](adrs/0008-integrations-are-ports-with-adapters.md)).
+
+`engine.Decide` is the table above as a pure function; one function applies its step.
 
 ## The state lives on the message
 
@@ -67,7 +71,9 @@ Every two minutes, for every open incident:
 - a page nobody picked up or silenced within the roster's minutes mentions the person on call, once
   per firing;
 - a firing incident's sparkline and also-firing line are redrawn every `enrich.refresh`, and the
-  message is edited only when one changed.
+  message is edited only when one changed;
+- an investigation started from the message is read until it finishes, and its findings are posted
+  in the thread once ([integrations](integrations.md#investigations-with-ploeg)).
 
 At `schedule.digestAt` each digest channel gets the last 24 hours; on `noiseReportDay` the noise
 report ranks the rules (three per noise vote, one per re-fire, one per short-lived firing). Both are
@@ -82,6 +88,8 @@ deduplicated by their own metadata, so a restart in the window does not post twi
 | Any enrichment upstream | skips that line, counted in `fogbell_enrichment_total` |
 | Alertmanager while making a silence | says so in the thread |
 | History unreadable | keeps incidents in memory, counted |
+| The investigator refuses or fails | says so in the thread |
+| An event webhook | logs it; the incident goes on |
 
 ## Why one replica
 

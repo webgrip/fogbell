@@ -86,3 +86,18 @@ tickets:
   clickup:
     tokenFile: /var/run/fogbell/clickup/clickup-token
     list: "900000000000"
+
+investigate:
+  ploeg:
+    url: http://ploegd.ploeg.svc:8080
+    tokenFile: /var/run/fogbell/ploeg/ploeg-token
+    team: sre
+    target: cluster
+    budgetUSD: 2
+    console: https://unfold.example.com/work
+
+events:
+  webhooks:
+    - url: https://n8n.example.com/webhook/fogbell
+      secretFile: /var/run/fogbell/events/webhook-secret
+      types: [opened, acknowledged, resolved]

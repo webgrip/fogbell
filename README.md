@@ -4,8 +4,9 @@ fogbell turns [Alertmanager](https://prometheus.io/docs/alerting/latest/alertman
 into one Slack message per incident. The message is posted once, edited in place as alerts come and
 go, and closed with a ✅ when the group resolves. Every change, acknowledgement and silence is a reply
 in its thread. Buttons on the message act on the incident: **I'm on it**, **Silence** for an hour, a
-day or a week (with a reason), **Noise**, **Ticket**, and a postmortem draft once a critical incident
-resolves.
+day or a week (with a reason), **Noise**, **Ticket**, **Investigate** (an agent team looks and reports in
+the thread), and a postmortem draft once a critical incident resolves. Every step is also sent as a
+CloudEvent to whatever subscribes ([integrations](docs/integrations.md)).
 
 **Status: v0.1, alpha.** The state schema on the messages is version 1 and stays readable by every
 later release ([ADR-0001](docs/adrs/0001-the-slack-message-is-the-only-store.md)).
@@ -51,7 +52,7 @@ escalates to the person on call from a roster.
 2. Install the chart with your Alertmanager and channels:
 
    ```sh
-   helm install fogbell oci://ghcr.io/webgrip/charts/fogbell -n monitoring \
+   helm install fogbell oci://harbor.webgrip.dev/webgrip/charts/fogbell -n monitoring \
      --set config.alertmanager.url=http://alertmanager-operated:9093 \
      --set 'config.channels.alerts={alerts}'
    ```
@@ -76,7 +77,7 @@ Every option is in [configuration](docs/configuration.md); a full example is
 
 ```sh
 mise run setup    # pinned toolchain
-mise run verify   # gofmt, vet, build, race tests, golangci-lint, helm lint, the chart's config, actionlint
+mise run verify   # gofmt, vet, build, race tests, golangci-lint, helm lint, the chart's config, shellcheck
 ```
 
 Start at [docs/index.md](docs/index.md). Contributions: [CONTRIBUTING.md](CONTRIBUTING.md).
