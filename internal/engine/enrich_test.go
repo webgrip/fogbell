@@ -59,9 +59,9 @@ const fluxConfig = "enrich:\n  flux:\n    enabled: true\n    commitURL: https://
 
 func TestTheChangeBeforeTheAlert(t *testing.T) {
 	h := newEnrichHarness(t, fluxConfig)
-	h.e.Kube = &fakeKube{ks: []map[string]any{
+	h.kube(&fakeKube{ks: []map[string]any{
 		kustomization("ns-app", "ns", applied{strings.Repeat("a", 40), starts - 720}, applied{strings.Repeat("b", 40), starts - 9000}),
-		kustomization("other", "elsewhere", applied{strings.Repeat("c", 40), starts - 60})}}
+		kustomization("other", "elsewhere", applied{strings.Repeat("c", 40), starts - 60})}})
 	h.notify("c", firing())
 	want := "🔧 Kustomization `ns-app` applied <https://git.example/-/commit/" + strings.Repeat("a", 40) + "|aaaaaaaa> 12 min before this alert"
 	if got := enriched(h.only()); len(got) != 1 || got[0] != want {
@@ -78,7 +78,7 @@ func TestAChangeReconciledAgainNamesItsPath(t *testing.T) {
 	ks := kustomization("grafana", "ns", applied{strings.Repeat("e", 40), starts - 900})
 	ks["spec"].(map[string]any)["path"] = "./apps/grafana/app"
 	ks["status"].(map[string]any)["history"].([]map[string]any)[0]["totalReconciliations"] = 14
-	h.e.Kube = &fakeKube{ks: []map[string]any{ks}}
+	h.kube(&fakeKube{ks: []map[string]any{ks}})
 	h.notify("c", firing())
 	want := "🔧 Kustomization `grafana` applied a change in <https://git.example/-/commits/main/apps/grafana/app|apps/grafana/app> 15 min before this alert"
 	if got := enriched(h.only()); len(got) != 1 || got[0] != want {
@@ -90,7 +90,7 @@ func TestHelmUpgradeAndNothingAfterTheStart(t *testing.T) {
 	h := newEnrichHarness(t, fluxConfig)
 	hr := map[string]any{"metadata": map[string]string{"name": "web", "namespace": "ns"}, "spec": map[string]any{},
 		"status": map[string]any{"history": []map[string]string{{"chartName": "web", "chartVersion": "1.2.3", "lastDeployed": iso(starts - 300)}}}}
-	h.e.Kube = &fakeKube{ks: []map[string]any{kustomization("ns-app", "ns", applied{strings.Repeat("d", 40), starts + 60})}, hr: []map[string]any{hr}}
+	h.kube(&fakeKube{ks: []map[string]any{kustomization("ns-app", "ns", applied{strings.Repeat("d", 40), starts + 60})}, hr: []map[string]any{hr}})
 	h.notify("c", firing())
 	if got := enriched(h.only()); len(got) != 1 || got[0] != "🔧 HelmRelease `web` upgraded to `web 1.2.3` 5 min before this alert" {
 		t.Fatal(got)
@@ -99,7 +99,7 @@ func TestHelmUpgradeAndNothingAfterTheStart(t *testing.T) {
 
 func TestNoChangeInTheWindowAddsNothing(t *testing.T) {
 	h := newEnrichHarness(t, fluxConfig)
-	h.e.Kube = &fakeKube{ks: []map[string]any{kustomization("ns-app", "ns", applied{strings.Repeat("a", 40), starts - 7200})}}
+	h.kube(&fakeKube{ks: []map[string]any{kustomization("ns-app", "ns", applied{strings.Repeat("a", 40), starts - 7200})}})
 	h.notify("c", firing())
 	if got := enriched(h.only()); len(got) != 0 {
 		t.Fatal(got)
@@ -108,7 +108,7 @@ func TestNoChangeInTheWindowAddsNothing(t *testing.T) {
 
 func TestWithoutRBACItPostsAndCounts(t *testing.T) {
 	h := newEnrichHarness(t, fluxConfig)
-	h.e.Kube = &fakeKube{fail: 403}
+	h.kube(&fakeKube{fail: 403})
 	if got := h.notify("c", firing()); got != "posted" || len(enriched(h.only())) != 0 {
 		t.Fatal(got)
 	}
@@ -118,8 +118,19 @@ func TestWithoutRBACItPostsAndCounts(t *testing.T) {
 }
 
 func (h *harness) withLogs() {
-	h.e.Logs = &upstream.Logs{URL: h.up.URL + "/vl", HTTP: h.up.Client()}
+	h.wired.Logs = &upstream.Logs{URL: h.up.URL + "/vl", HTTP: h.up.Client()}
+	h.e.Wire(h.wired)
 }
+
+func (h *harness) kube(k *fakeKube) {
+	h.wired.Kube = k
+	h.e.Wire(h.wired)
+}
+
+const (
+	sparkPoints  = 30
+	timelineBase = 12 * 3600
+)
 
 func logRows(msgs ...string) string {
 	var out []string

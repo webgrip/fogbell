@@ -21,7 +21,7 @@ const RowMax = 5
 
 // RowOrder ranks the row's elements: the first move first.
 var RowOrder = []string{"link_object", "link_runbook", "ack", "unsilence", "silence", "postmortem",
-	"link_dashboard", "link_all", "link_chat", "noise", "link_ticket", "ticket"}
+	"investigate", "link_investigation", "link_dashboard", "link_all", "link_chat", "noise", "link_ticket", "ticket"}
 
 // SilenceChoices are the silence lengths a person can pick.
 var SilenceChoices = []struct{ Value, Label string }{{"1h", "1 hour"}, {"24h", "24 hours"}, {"7d", "7 days"}}
@@ -35,7 +35,8 @@ type Renderer struct {
 
 // Features are the optional buttons whose credential is present right now.
 type Features struct {
-	Ticket bool
+	Ticket      bool
+	Investigate bool
 }
 
 // Icon is the group's icon: a check mark once resolved, a configured icon, or the severity's.
@@ -166,7 +167,66 @@ func (r *Renderer) InteractiveElements(st *state.Incident, resolved bool, f Feat
 	case f.Ticket:
 		out = append(out, slack.Button("ticket", "📋 Ticket", ""))
 	}
+	switch {
+	case st.InvestigationURL != "":
+		out = append(out, slack.Button("link_investigation", "🔎 Investigation", st.InvestigationURL))
+	case st.Investigation == "" && !resolved && f.Investigate:
+		out = append(out, slack.Button("investigate", "🔎 Investigate", ""))
+	}
 	return out
+}
+
+// owned is a link the interactive elements make, which Restate replaces rather than keeps.
+func owned(actionID string) bool {
+	return actionID == "link_ticket" || actionID == "link_investigation"
+}
+
+// Restate rewrites the state line and the elements that act on an existing message's blocks, and
+// keeps everything else: the alert lines, the enrichment and the plain links.
+func Restate(blocks []slack.Block, line string, acting []slack.Element) []slack.Block {
+	var out []slack.Block
+	for _, b := range blocks {
+		if b.BlockID != "state" {
+			out = append(out, b)
+		}
+	}
+	at := len(out)
+	for i, b := range out {
+		if b.BlockID == "actions" {
+			at = i
+			break
+		}
+	}
+	if at == len(out) && len(out) > 0 {
+		at = len(out) - 1
+		out = insert(out, at, slack.Block{Type: "actions", BlockID: "actions"})
+	}
+	if line != "" {
+		out = insert(out, at, slack.Block{Type: "context", BlockID: "state", Elements: []slack.Element{slack.TextElement(line)}})
+		at++
+	}
+	if at >= len(out) {
+		return out
+	}
+	var links []slack.Element
+	for _, el := range RowElements(out[at].Elements) {
+		if strings.HasPrefix(el.ActionID, "link_") && !owned(el.ActionID) {
+			links = append(links, el)
+		}
+	}
+	row := ActionRow(append(links, acting...))
+	if len(row) == 0 {
+		return append(out[:at], out[at+1:]...)
+	}
+	out[at] = slack.Block{Type: "actions", BlockID: "actions", Elements: row}
+	return out
+}
+
+func insert(blocks []slack.Block, at int, b slack.Block) []slack.Block {
+	blocks = append(blocks, slack.Block{})
+	copy(blocks[at+1:], blocks[at:])
+	blocks[at] = b
+	return blocks
 }
 
 // ActionRow is at most RowMax elements: the first four by RowOrder and, when more are left, an

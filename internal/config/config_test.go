@@ -60,3 +60,19 @@ func TestDurationsTakeDays(t *testing.T) {
 		t.Fatal(c.Incidents)
 	}
 }
+
+func TestIntegrationsAreChecked(t *testing.T) {
+	_, err := Parse([]byte(`
+alertmanager: {url: http://am}
+investigate: {ploeg: {url: http://ploeg}}
+events: {webhooks: [{types: [opened, exploded]}]}
+`))
+	if err == nil {
+		t.Fatal("accepted incomplete integrations")
+	}
+	for _, want := range []string{"investigate.ploeg needs team, target and tokenFile", "events.webhooks[0].url is required", `"exploded" is not an event type`} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("error does not say %q: %v", want, err)
+		}
+	}
+}

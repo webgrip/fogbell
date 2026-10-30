@@ -27,7 +27,7 @@ func (e *Engine) report(ctx context.Context, channel, text, event string, payloa
 func (e *Engine) Digest(ctx context.Context, channelName, day string) (string, error) {
 	channel := e.Slack.ChannelID(ctx, channelName)
 	now := e.now()
-	msgs := e.history(ctx, channel, now-86400)
+	msgs := e.Store.Messages(ctx, channel, now-86400)
 	type item struct {
 		msg *slack.Message
 		st  *state.Incident
@@ -38,7 +38,7 @@ func (e *Engine) Digest(ctx context.Context, channelName, day string) (string, e
 		if msgs[i].Payload(e.Config.Slack.Events.Digest, &d) && d.Day == day {
 			return "already", nil
 		}
-		if st, ok := e.incident(&msgs[i]); ok {
+		if st, ok := e.Store.Decode(&msgs[i]); ok {
 			incidents = append(incidents, item{&msgs[i], st})
 		}
 	}
@@ -212,7 +212,7 @@ func NoiseRanking(incidents []*state.Incident, shortLived float64) []Rule {
 func (e *Engine) NoiseReport(ctx context.Context, channelName, week string) (string, error) {
 	channel := e.Slack.ChannelID(ctx, channelName)
 	now := e.now()
-	for _, m := range e.history(ctx, channel, now-8*86400) {
+	for _, m := range e.Store.Messages(ctx, channel, now-8*86400) {
 		var r state.NoiseReport
 		if m.Payload(e.Config.Slack.Events.NoiseReport, &r) && r.Week == week {
 			return "already", nil
@@ -226,9 +226,9 @@ func (e *Engine) NoiseReport(ctx context.Context, channelName, week string) (str
 	channels := e.Config.AlertChannels()
 	for _, name := range channels {
 		ch := e.Slack.ChannelID(ctx, name)
-		msgs := e.history(ctx, ch, now-7*86400)
+		msgs := e.Store.Messages(ctx, ch, now-7*86400)
 		for i := range msgs {
-			if st, ok := e.incident(&msgs[i]); ok {
+			if st, ok := e.Store.Decode(&msgs[i]); ok {
 				all = append(all, found{ch, msgs[i].TS, st})
 			}
 		}

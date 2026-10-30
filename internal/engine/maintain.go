@@ -10,6 +10,7 @@ import (
 
 	"github.com/webgrip/fogbell/internal/format"
 	"github.com/webgrip/fogbell/internal/state"
+	"github.com/webgrip/fogbell/internal/store"
 )
 
 const expiryWarning = 3600
@@ -56,98 +57,110 @@ func OnCall(r Roster, now time.Time, loc *time.Location, hour, minute int) strin
 	return r.People[((weeks%n)+n)%n]
 }
 
+// task is time-driven work on one open incident. due says whether it applies now; run does it under
+// the incident's lock with the message's current state and says what it did.
+type task struct {
+	due func(st *state.Incident, now float64) bool
+	run func(ctx context.Context, en *store.Entry, now float64) string
+}
+
+func (e *Engine) tasks() []task {
+	return []task{
+		{e.expiryDue, e.warnExpiry},
+		{e.escalationDue, e.escalate},
+		{e.investigationDue, e.collectFindings},
+	}
+}
+
 // Maintain runs the time-driven work on open incidents: a silence about to end while the alert still
-// fires, a page nobody picked up, and the redraw of a firing incident. It says what it did.
+// fires, a page nobody picked up, an investigation's findings, and the redraw of a firing incident.
+// It says what it did.
 func (e *Engine) Maintain(ctx context.Context) []string {
 	for _, name := range e.Config.AlertChannels() {
-		e.scan(ctx, e.Slack.ChannelID(ctx, name))
+		e.Store.Scan(ctx, e.Slack.ChannelID(ctx, name))
 	}
 	now := e.now()
-	e.mu.Lock()
-	e.init()
-	snapshot := make(map[string]entry, len(e.index))
-	for k, v := range e.index {
-		snapshot[k] = v
-	}
-	e.mu.Unlock()
 	var done []string
-	for key, en := range snapshot {
-		st := en.St
-		if st.Resolved() {
-			continue
+	e.Store.Each(func(key string, en store.Entry) {
+		if en.State.Resolved() && !e.investigationDue(&en.State, now) {
+			return
 		}
-		lead := 600.0
-		if st.SilenceUntil-st.SilenceAt > 2*expiryWarning {
-			lead = expiryWarning
+		for _, t := range e.tasks() {
+			if t.due(&en.State, now) {
+				done = append(done, e.locked(ctx, key, en, t))
+			}
 		}
-		if st.SilenceID != "" && st.ExpiryWarned != st.SilenceID && st.SilenceUntil-now > 0 && st.SilenceUntil-now <= lead {
-			done = append(done, e.warnExpiry(ctx, key, en.Channel, en.TS, st.SilenceID))
+		if e.refreshDue(&en.State, now) {
+			done = append(done, e.refresh(ctx, key, en))
 		}
-		if e.needsEscalation(&en.St, now) {
-			done = append(done, e.escalate(ctx, key, en.Channel, en.TS))
-		}
-		refreshed := st.RefreshedAt
-		if refreshed == 0 {
-			refreshed = st.PostedAt
-		}
-		if (e.Prom != nil || e.Config.Enrich.Related) && st.State == "firing" && now-refreshed >= e.Config.Enrich.Refresh.Seconds() {
-			done = append(done, e.refresh(ctx, key, en.Channel, en.TS))
-		}
-	}
+	})
 	return done
 }
 
-// refresh redraws the sparkline and the also-firing line of a firing incident in place, and edits the
-// message only when one changed. It needs the group in memory: after a restart that is the next
-// notification, which Alertmanager repeats.
-func (e *Engine) refresh(ctx context.Context, key, channel, ts string) string {
-	g := e.group(key)
-	if g == nil {
-		return "unknown"
+// locked re-reads the message under the incident's lock and runs a task on its current state, if it
+// still applies; the result is restated on the message and kept.
+func (e *Engine) locked(ctx context.Context, key string, en store.Entry, t task) string {
+	defer e.Store.Lock(key)()
+	msg := e.Slack.Message(ctx, en.Channel, en.TS)
+	if cur, ok := e.Store.Get(key); ok && cur.TS == en.TS {
+		en = cur
 	}
-	lines := map[string]string{}
-	if line, err := e.spark(ctx, g); err != nil {
-		e.Log.Warn("refresh spark failed", "error", err)
-	} else if line != "" {
-		lines["spark"] = line
-	}
-	if line, err := e.related(ctx, g); err != nil {
-		e.Log.Warn("refresh related failed", "error", err)
-	} else {
-		lines["related"] = line
-	}
-	l := e.lock(key)
-	l.Lock()
-	defer l.Unlock()
-	en, ok := e.get(key)
-	if !ok || en.TS != ts || en.St.State != "firing" {
-		return "changed"
-	}
-	st := en.St
-	st.RefreshedAt = e.now()
-	same := true
-	for k, v := range lines {
-		if (k == "spark" && st.Spark != v) || (k == "related" && st.Related != v) {
-			same = false
+	if msg != nil {
+		if st, ok := e.Store.Decode(msg); ok {
+			en.State = *st
 		}
 	}
-	if same {
-		e.put(key, entry{channel, ts, st})
-		e.Metrics.Refreshes.WithLabelValues("same").Inc()
-		return "same"
+	now := e.now()
+	if !t.due(&en.State, now) {
+		return "changed"
 	}
-	setLines(&st, lines)
-	if err := e.update(ctx, channel, ts, g, &st); err != nil {
-		e.Log.Warn("refresh update failed", "error", err)
-		return "error"
+	done := t.run(ctx, &en, now)
+	if msg != nil {
+		e.restate(ctx, en, msg)
 	}
-	e.put(key, entry{channel, ts, st})
-	e.Metrics.Refreshes.WithLabelValues("edited").Inc()
-	return "refreshed"
+	e.Store.Put(key, en)
+	return done
 }
 
-func (e *Engine) needsEscalation(st *state.Incident, now float64) bool {
-	if !e.Config.IsPage(st.Receiver) || st.AckedBy != "" || st.SilenceID != "" {
+func (e *Engine) refreshDue(st *state.Incident, now float64) bool {
+	since := st.RefreshedAt
+	if since == 0 {
+		since = st.PostedAt
+	}
+	return st.State == "firing" && (e.up.Prom != nil || e.Config.Enrich.Related) && now-since >= e.Config.Enrich.Refresh.Seconds()
+}
+
+// expiryDue: a silence made from the message ends within the hour (ten minutes for a silence of two
+// hours or less, or the warning would follow the press), not warned about yet.
+func (e *Engine) expiryDue(st *state.Incident, now float64) bool {
+	lead := 600.0
+	if st.SilenceUntil-st.SilenceAt > 2*expiryWarning {
+		lead = expiryWarning
+	}
+	left := st.SilenceUntil - now
+	return !st.Resolved() && st.SilenceID != "" && st.ExpiryWarned != st.SilenceID && left > 0 && left <= lead
+}
+
+func (e *Engine) warnExpiry(ctx context.Context, en *store.Entry, now float64) string {
+	st := &en.State
+	active, err := e.AM.SilenceActive(ctx, st.SilenceID)
+	if err != nil {
+		e.Log.Warn("silence unreadable; asking again next round", "silence", st.SilenceID, "error", err)
+		return "unknown"
+	}
+	st.ExpiryWarned = st.SilenceID
+	if !active {
+		return "gone"
+	}
+	e.reply(ctx, en.Channel, en.TS, "⏳ The silence <@"+st.SilenceBy+"> set ends at "+format.Date(st.SilenceUntil, format.Time, format.TimeFallback)+
+		", in "+format.Duration(st.SilenceUntil-now)+", and this still fires. Silence it again, or fix the cause.")
+	return "warned"
+}
+
+// escalationDue: a page nobody picked up or silenced within the roster's minutes, not escalated yet
+// for this firing.
+func (e *Engine) escalationDue(st *state.Incident, now float64) bool {
+	if st.Resolved() || !e.Config.IsPage(st.Receiver) || st.AckedBy != "" || st.SilenceID != "" {
 		return false
 	}
 	shown := fired(st, 0)
@@ -162,67 +175,46 @@ func (e *Engine) needsEscalation(st *state.Incident, now float64) bool {
 	return len(r.People) > 0 && now-shown >= float64(60*after)
 }
 
-func (e *Engine) escalate(ctx context.Context, key, channel, ts string) string {
-	l := e.lock(key)
-	l.Lock()
-	defer l.Unlock()
-	msg := e.Slack.Message(ctx, channel, ts)
-	en, _ := e.get(key)
-	st := en.St
-	if msg != nil {
-		if cur, ok := e.incident(msg); ok {
-			st = *cur
-		}
-	}
-	now := e.now()
-	if !e.needsEscalation(&st, now) {
-		return "changed"
-	}
+func (e *Engine) escalate(ctx context.Context, en *store.Entry, now float64) string {
+	st := &en.State
 	h, m, _ := e.Config.HandoverClock()
 	person := OnCall(e.Roster(), e.Now(), e.Config.Location(), h, m)
-	shown := fired(&st, 0)
+	shown := fired(st, 0)
 	st.Escalated = shown
-	e.reply(ctx, channel, ts, "📟 <@"+person+">, you are on call this week: nobody has picked this up in "+
+	e.reply(ctx, en.Channel, en.TS, "📟 <@"+person+">, you are on call this week: nobody has picked this up in "+
 		format.Duration(now-shown)+". Press 👀 I'm on it, or hand it on in this thread.")
 	e.Metrics.Escalations.WithLabelValues(st.Alertname).Inc()
-	if msg != nil {
-		e.restate(ctx, channel, ts, msg, &st)
-	}
-	e.put(key, entry{channel, ts, st})
 	return "escalated"
 }
 
-func (e *Engine) warnExpiry(ctx context.Context, key, channel, ts, sid string) string {
-	l := e.lock(key)
-	l.Lock()
-	defer l.Unlock()
-	msg := e.Slack.Message(ctx, channel, ts)
-	en, _ := e.get(key)
-	st := en.St
-	if msg != nil {
-		if cur, ok := e.incident(msg); ok {
-			st = *cur
-		}
-	}
-	if st.SilenceID != sid || st.Resolved() {
-		return "changed"
-	}
-	active, err := e.AM.SilenceActive(ctx, sid)
+// investigationDue: an investigation is running and its findings are not posted yet.
+func (e *Engine) investigationDue(st *state.Incident, _ float64) bool {
+	return st.Investigation != "" && !st.InvestigationDone && e.Investigator != nil
+}
+
+func (e *Engine) collectFindings(ctx context.Context, en *store.Entry, _ float64) string {
+	st := &en.State
+	s, err := e.Investigator.Status(ctx, st.Investigation)
 	if err != nil {
-		e.Log.Warn("silence unreadable; asking again next round", "silence", sid, "error", err)
+		e.Log.Warn("investigation unreadable; asking again next round", "id", st.Investigation, "error", err)
 		return "unknown"
 	}
-	st.ExpiryWarned = sid
-	if active {
-		e.reply(ctx, channel, ts, "⏳ The silence <@"+st.SilenceBy+"> set ends at "+format.Date(st.SilenceUntil, format.Time, format.TimeFallback)+
-			", in "+format.Duration(st.SilenceUntil-e.now())+", and this still fires. Silence it again, or fix the cause.")
+	if s.URL != "" {
+		st.InvestigationURL = s.URL
 	}
-	if msg != nil {
-		e.restate(ctx, channel, ts, msg, &st)
+	if !s.Done {
+		return "investigating"
 	}
-	e.put(key, entry{channel, ts, st})
-	if active {
-		return "warned"
+	st.InvestigationDone = true
+	text := "🔎 " + e.Investigator.Name() + " finished the investigation <@" + st.InvestigationBy + "> asked for (" + s.State + ")"
+	if s.URL != "" {
+		text += ": <" + s.URL + "|the work item>"
 	}
-	return "gone"
+	if s.Findings == "" {
+		text += ". It reported no findings."
+	} else {
+		text += ".\n" + format.Cut(s.Findings, 2800) + "\n_An agent wrote this. Check it before you act on it._"
+	}
+	e.reply(ctx, en.Channel, en.TS, text)
+	return "investigated"
 }

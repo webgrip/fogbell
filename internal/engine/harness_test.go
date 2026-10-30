@@ -182,6 +182,7 @@ func (a *fakeAM) matchers(i int) map[string]string {
 }
 
 type harness struct {
+	wired Upstreams
 	t     *testing.T
 	slack *slacktest.Server
 	am    *fakeAM
@@ -223,15 +224,17 @@ func (h *harness) engine(cfg *config.Config) *Engine {
 func (h *harness) restart() {
 	old := h.e
 	h.e = h.engine(old.Config)
-	h.e.Prom, h.e.Ruler, h.e.Logs, h.e.Kube, h.e.Tracker, h.e.Roster = old.Prom, old.Ruler, old.Logs, old.Kube, old.Tracker, old.Roster
+	h.e.Tracker, h.e.Investigator, h.e.Roster, h.e.Events = old.Tracker, old.Investigator, old.Roster, old.Events
+	h.e.Wire(h.wired)
 }
 
 func (h *harness) withMetrics() {
-	h.e.Prom = &upstream.Prometheus{URL: h.up.URL + "/vm", HTTP: h.up.Client()}
-	h.e.Ruler = &upstream.Ruler{URL: h.up.URL + "/vmalert", HTTP: h.up.Client()}
+	h.wired.Prom = &upstream.Prometheus{URL: h.up.URL + "/vm", HTTP: h.up.Client()}
+	h.wired.Ruler = &upstream.Ruler{URL: h.up.URL + "/vmalert", HTTP: h.up.Client()}
 	if host := h.e.Config.Enrich.Ruler.GeneratorHost; host != "" {
-		h.e.Ruler.GeneratorHost = regexp.MustCompile(host)
+		h.wired.Ruler.GeneratorHost = regexp.MustCompile(host)
 	}
+	h.e.Wire(h.wired)
 }
 
 func (h *harness) notify(channel string, g *alert.Group) string {

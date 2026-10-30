@@ -3,6 +3,7 @@ package upstream
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -126,6 +127,24 @@ func Pick(result []Series, labels map[string]string) *Series {
 		return nil
 	}
 	return &result[best]
+}
+
+// PodNode is the node a pod runs on, from kube_pod_info; "" when it is not exactly one.
+func (p *Prometheus) PodNode(ctx context.Context, namespace, pod, label string) (string, error) {
+	result, err := p.Query(ctx, fmt.Sprintf(`kube_pod_info{namespace=%q,pod=%q}`, namespace, pod), 0)
+	if err != nil {
+		return "", err
+	}
+	nodes := map[string]bool{}
+	for _, s := range result {
+		nodes[s.Metric[label]] = true
+	}
+	for n := range nodes {
+		if len(nodes) == 1 {
+			return n, nil
+		}
+	}
+	return "", nil
 }
 
 // Ruler reads a rule's expression for an alert.

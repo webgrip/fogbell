@@ -70,6 +70,12 @@ type Incident struct {
 	History       string  `json:"history,omitempty"`
 	Related       string  `json:"related,omitempty"`
 	Change        string  `json:"change,omitempty"`
+	// Investigation is the agent platform's id of an investigation started from the message, with
+	// its link and whether its findings were posted.
+	Investigation     string `json:"investigation_id,omitempty"`
+	InvestigationURL  string `json:"investigation_url,omitempty"`
+	InvestigationBy   string `json:"investigation_by,omitempty"`
+	InvestigationDone bool   `json:"investigation_done,omitempty"`
 }
 
 // Resolved reports whether the incident is closed.

@@ -18,6 +18,7 @@ import (
 	"go.yaml.in/yaml/v3"
 
 	"github.com/webgrip/fogbell/internal/alert"
+	"github.com/webgrip/fogbell/internal/events"
 )
 
 // Config is the whole configuration file. docs/configuration.md describes every field.
@@ -33,6 +34,8 @@ type Config struct {
 	OnCall       OnCall       `yaml:"onCall"`
 	Enrich       Enrich       `yaml:"enrich"`
 	Tickets      Tickets      `yaml:"tickets"`
+	Investigate  Investigate  `yaml:"investigate"`
+	Events       EventSinks   `yaml:"events"`
 
 	location  *time.Location
 	objects   alert.Objects
@@ -181,6 +184,34 @@ type ClickUp struct {
 	List      string `yaml:"list"`
 }
 
+// Investigate is where the investigate button hands an incident.
+type Investigate struct {
+	Ploeg Ploeg `yaml:"ploeg"`
+}
+
+// Ploeg admits investigations as Work Items through Ploeg's operator API.
+type Ploeg struct {
+	URL       string  `yaml:"url"`
+	TokenFile string  `yaml:"tokenFile"`
+	Team      string  `yaml:"team"`
+	Target    string  `yaml:"target"`
+	BudgetUSD float64 `yaml:"budgetUSD"`
+	Model     string  `yaml:"model"`
+	Console   string  `yaml:"console"`
+}
+
+// EventSinks is where fogbell sends what happens to an incident, as CloudEvents.
+type EventSinks struct {
+	Webhooks []Webhook `yaml:"webhooks"`
+}
+
+// Webhook is one CloudEvents receiver.
+type Webhook struct {
+	URL        string   `yaml:"url"`
+	SecretFile string   `yaml:"secretFile"`
+	Types      []string `yaml:"types"`
+}
+
 // Duration is a time.Duration written as "90s", "30m", "1h" or "8d".
 type Duration time.Duration
 
@@ -304,8 +335,23 @@ func (c *Config) compile() error {
 	if c.Alertmanager.URL == "" {
 		errs = append(errs, errors.New("alertmanager.url is required: silences are made there"))
 	}
-	for name, u := range map[string]string{"alertmanager.url": c.Alertmanager.URL, "enrich.metrics.url": c.Enrich.Metrics.URL,
-		"enrich.ruler.url": c.Enrich.Ruler.URL, "enrich.logs.url": c.Enrich.Logs.URL} {
+	urls := map[string]string{"alertmanager.url": c.Alertmanager.URL, "enrich.metrics.url": c.Enrich.Metrics.URL,
+		"enrich.ruler.url": c.Enrich.Ruler.URL, "enrich.logs.url": c.Enrich.Logs.URL, "investigate.ploeg.url": c.Investigate.Ploeg.URL}
+	for i, w := range c.Events.Webhooks {
+		urls[fmt.Sprintf("events.webhooks[%d].url", i)] = w.URL
+		if w.URL == "" {
+			errs = append(errs, fmt.Errorf("events.webhooks[%d].url is required", i))
+		}
+		for _, t := range w.Types {
+			if !events.Known(t) {
+				errs = append(errs, fmt.Errorf("events.webhooks[%d].types: %q is not an event type", i, t))
+			}
+		}
+	}
+	if p := c.Investigate.Ploeg; p.URL != "" && (p.Team == "" || p.Target == "" || p.TokenFile == "") {
+		errs = append(errs, errors.New("investigate.ploeg needs team, target and tokenFile with its url"))
+	}
+	for name, u := range urls {
 		if u == "" {
 			continue
 		}
