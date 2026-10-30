@@ -62,17 +62,17 @@ jobs:
   release:
     name: Semantic Release
     needs: [verify]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
     runs-on: docker
     container:
-      image: harbor.webgrip.dev/webgrip/semantic-release:2.1.0@sha256:9fa6ddc14d1a126fe14a7a63b88bf49cb2ee9053b88b4939db60d7761d492d2d
+      image: harbor.webgrip.dev/webgrip/semantic-release:2.3.1@sha256:a39fd2d6a0b29a947903def7ba88b20d17e73d22040ed01fc7b2e2bb6973068a
     permissions:
       contents: write
       issues: write
       pull-requests: write
       statuses: write
     steps:
-      - uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/semantic-release@v3.3.0
+      - uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/semantic-release@v3.3.2
         with:
           token: ${{ secrets.WEBGRIP_CI_TOKEN }}
           install-dependencies: 'false'
