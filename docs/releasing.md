@@ -22,7 +22,7 @@ git push origin v0.0.0
 
 `On Release Published` runs on the release semantic-release created:
 
-1. builds the image from the `Dockerfile` for linux/amd64 and linux/arm64 and pushes
+1. builds the image from the `Dockerfile` for linux/amd64 and pushes
    `harbor.webgrip.dev/webgrip/fogbell:<version>` (and `:latest` for a stable version);
 2. signs and attests it, with an SBOM, through the shared cosign composite;
 3. pushes the chart at the same version to `oci://harbor.webgrip.dev/webgrip/charts/fogbell`.
