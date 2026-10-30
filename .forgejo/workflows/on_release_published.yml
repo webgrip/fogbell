@@ -83,6 +83,22 @@ jobs:
           docker-tags: |
             webgrip/fogbell:${{ needs.parse-release-tag.outputs.version }}
             ${{ needs.parse-release-tag.outputs.latest == 'true' && 'webgrip/fogbell:latest' || '' }}
+      - name: Resolve the published digest
+        id: digest
+        shell: bash
+        env:
+          IMAGE: harbor.webgrip.dev/webgrip/fogbell:${{ needs.parse-release-tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          digest="$(docker buildx imagetools inspect "$IMAGE" --format '{{ .Manifest.Digest }}')"
+          [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo "no digest resolved for $IMAGE" >&2; exit 1; }
+          echo "ref=harbor.webgrip.dev/webgrip/fogbell@${digest}" >> "$GITHUB_OUTPUT"
+      # Writes cve-budget.json, which the signing step attests; admission checks that verdict.
+      - name: CVE budget gate (grype + OpenVEX)
+        uses: https://forgejo.webgrip.dev/webgrip/infrastructure/.forgejo/actions/cve-gate@c9e9720d72986f3e5493c673994e321aa27b6600
+        with:
+          image-ref: ${{ steps.digest.outputs.ref }}
+          image-name: fogbell
       - name: Sign, attest and SBOM (Harbor)
         uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/cosign-sign-attest@v3.3.0
         with:
