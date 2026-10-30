@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-api
+  namespace: storefront
+spec:
+  template:
+    metadata:
+      annotations:
+        io.katacontainers.config.hypervisor.default_memory: "4096"
+    spec:
+      runtimeClassName: kata
+      hostNetwork: true
+      containers:
+        - name: api
+          image: registry.example.com/shop/api:1.4.2
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+          volumeMounts:
+            - name: node-logs
+              mountPath: /host/logs
+      volumes:
+        - name: node-logs
+          hostPath:
+            path: /var/log

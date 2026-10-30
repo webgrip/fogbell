@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          resources:
+            limits:
+              memory: 256Mi

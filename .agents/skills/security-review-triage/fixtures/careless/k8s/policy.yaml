@@ -1,0 +1,23 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-sandbox-annotations
+  annotations:
+    policies.kyverno.io/title: Block sandbox override annotations
+spec:
+  validationFailureAction: Audit
+  failurePolicy: Ignore
+  rules:
+    - name: no-kata-annotations
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+      validate:
+        message: Sandbox override annotations are not allowed.
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.metadata.annotations || `{}` | keys(@) }}"
+                operator: AnyIn
+                value: ["io.katacontainers.*"]

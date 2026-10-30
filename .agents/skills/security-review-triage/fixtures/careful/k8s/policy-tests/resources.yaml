@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  annotations:
+    io.katacontainers.config.hypervisor.default_memory: "4096"
+spec:
+  containers:
+    - name: c
+      image: registry.example.com/x:1.0
+      securityContext:
+        privileged: true

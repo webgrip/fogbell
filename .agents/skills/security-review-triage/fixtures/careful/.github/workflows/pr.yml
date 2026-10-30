@@ -1,0 +1,19 @@
+name: pr
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: ./.github/actions/setup
+      - name: Title check
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "::add-mask::${{ secrets.REGISTRY_TOKEN }}"
+          printf '%s\n' "$TITLE" | grep -q .
+  reuse:
+    uses: example/workflows/.github/workflows/lint.yml@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0

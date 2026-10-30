@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: shop-alerts
+spec:
+  groups:
+    - name: shop
+      rules:
+        - alert: ShopApiDown
+          expr: up{job="shop-api"} == 0
+          annotations:
+            summary: >-
+              {{ $labels.instance }} has been down for 5 minutes
+            description: |
+              {{ if $value }}
+              shop-api is unreachable
+              {{ end }}

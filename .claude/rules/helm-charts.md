@@ -1,0 +1,15 @@
+---
+paths:
+  - "**/Chart.yaml"
+  - "**/values.schema.json"
+  - "**/helm/**"
+  - "**/charts/**"
+---
+
+# Helm charts
+
+- Leave `version` and `appVersion` in `Chart.yaml` to the release job, because the release stamps them from the tag ([homelab-cluster ADR-0078](https://forgejo.webgrip.dev/webgrip/homelab-cluster/src/branch/main/docs/techdocs/docs/adr/adr-0078-one-release-recipe-four-kinds.md)).
+- Change `values.schema.json` in the same commit as the `values.yaml` key it describes, because Helm rejects values the schema does not allow and accepts typos in keys it does not know.
+- Run `helm lint` and `helm template` against the default values and every example values file before committing, because CI renders the same combinations and a template error only shows when rendered.
+- Pin every chart dependency to an exact version and commit the regenerated `Chart.lock` with it, because a range resolves differently on the next build.
+- Depend on the bjw-s `app-template` chart for a service without templates of its own, because `common-charts` and `application-template` are archived.

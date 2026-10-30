@@ -1,0 +1,9 @@
+name: security-review-triage
+version: 935579b
+description: 'Defensive security review and triage: decide whether a finding or CVE
+  is real and affects you, size its blast radius, map it to advisories with a coverage
+  table, scan Kubernetes, Dockerfile and CI config, disclose privately, and prove
+  a fix works both ways.'
+author: Webgrip
+license: MIT
+type: hybrid

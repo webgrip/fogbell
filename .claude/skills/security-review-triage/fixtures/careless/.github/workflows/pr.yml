@@ -1,0 +1,23 @@
+name: pr
+on:
+  pull_request_target:
+  issues:
+    types: [opened]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: npm ci && npm test
+  publish:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Debug credentials
+        run: |
+          echo "token is ${{ secrets.REGISTRY_TOKEN }}"
+      - name: Label issue
+        run: |
+          gh issue edit 1 --add-label "${{ github.event.issue.title }}"

@@ -1,0 +1,40 @@
+{
+  "checked": "2026-10-24",
+  "sources": {
+    "osv": {
+      "name": "OSV",
+      "endpoint": "https://api.osv.dev/v1/query",
+      "override_env": "OSV_API_URL",
+      "docs": "https://google.github.io/osv.dev/post-v1-query/",
+      "auth": "none"
+    },
+    "ghsa": {
+      "name": "GitHub Advisory Database",
+      "endpoint": "https://api.github.com/advisories",
+      "override_env": "GITHUB_API_URL",
+      "docs": "https://docs.github.com/en/rest/security-advisories/global-advisories",
+      "auth": "optional GITHUB_TOKEN; without it the REST API allows 60 requests an hour per IP"
+    }
+  },
+  "ecosystems": {
+    "npm": {"osv": "npm", "ghsa": "npm"},
+    "pypi": {"osv": "PyPI", "ghsa": "pip"},
+    "go": {"osv": "Go", "ghsa": "go"},
+    "maven": {"osv": "Maven", "ghsa": "maven"},
+    "cargo": {"osv": "crates.io", "ghsa": "rust"},
+    "rubygems": {"osv": "RubyGems", "ghsa": "rubygems"},
+    "nuget": {"osv": "NuGet", "ghsa": "nuget"},
+    "composer": {"osv": "Packagist", "ghsa": "composer"},
+    "hex": {"osv": "Hex", "ghsa": "erlang"},
+    "pub": {"osv": "Pub", "ghsa": "pub"},
+    "swift": {"osv": "SwiftURL", "ghsa": "swift"},
+    "actions": {"osv": "GitHub Actions", "ghsa": "actions"}
+  },
+  "not_queried": [
+    "NVD",
+    "distribution trackers (Debian, Ubuntu, Red Hat, Alpine)",
+    "vendor advisories outside GitHub",
+    "the project's own repository security advisories",
+    "unpublished private reports"
+  ]
+}

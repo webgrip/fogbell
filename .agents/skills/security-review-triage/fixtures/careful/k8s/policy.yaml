@@ -1,0 +1,34 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-sandbox-annotations
+  annotations:
+    policies.kyverno.io/title: Block sandbox override annotations
+spec:
+  validationFailureAction: Enforce
+  failurePolicy: Fail
+  rules:
+    - name: no-kata-annotations
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+      validate:
+        message: Sandbox override annotations are not allowed.
+        deny: {}
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: report-image-labels
+spec:
+  validationFailureAction: Audit
+  rules: []
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: restrict-host-namespaces
+spec:
+  policyName: restrict-host-namespaces
+  validationActions: [Deny, Audit]

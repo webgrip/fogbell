@@ -1,0 +1,150 @@
+{
+  "skill_name": "security-review-triage",
+  "_format": "skill-creator eval format — see https://agentskills.io/skill-creation/evaluating-skills. Run each prompt in a fresh session with and without the skill; grade the assertions. expect_trigger false = should-NOT-fire probe; null = output-quality-only case the trigger probe skips.",
+  "evals": [
+    {
+      "id": "is-this-real-config-finding",
+      "prompt": "An agent says the Kata extension on our Talos nodes forwards all io.katacontainers annotations to the runtime and that this matches a critical Kata advisory. Is this actually real and are we affected?",
+      "assertions": [
+        "Restates the claim as actor, capability, trigger, root cause and impact before judging it",
+        "Separates what was inspected in the config from what is inferred from the advisory text, and labels each",
+        "Checks the preconditions against the deployment (who can create pods with that runtime) instead of accepting the advisory's severity",
+        "Gives a verdict of confirmed, not actionable or needs review, and a needs-review verdict names the smallest fact that would change it",
+        "Contains no exploit payload or step-by-step attack"
+      ],
+      "expect_trigger": true
+    },
+    {
+      "id": "blast-radius",
+      "prompt": "What is the blast radius of this issue? Who could actually trigger it and what does it reach?",
+      "assertions": [
+        "Fills the blast-radius fields: entry point, position needed, privileges and preconditions, asset reached, what limits it, what it does not give, who is exposed",
+        "Lists explicit non-capabilities so severity does not inflate",
+        "Names the existing controls that limit it (RBAC, admission policy, network policy, sandbox)"
+      ],
+      "expect_trigger": true
+    },
+    {
+      "id": "private-disclosure",
+      "prompt": "I found a security problem in an open-source project's default config. How and where do I report it without making it public?",
+      "assertions": [
+        "Checks the project's SECURITY.md first and names the forge's private vulnerability report as the usual channel",
+        "Warns against describing the flaw in issues, chat, PR titles, branch names or commits before publication",
+        "Drafts the report with summary, details, impact, affected versions, workaround and a severity marked as a proposal",
+        "States plainly in the draft whether anything was exploited or tested"
+      ],
+      "expect_trigger": true
+    },
+    {
+      "id": "verify-policy",
+      "prompt": "I added a Kyverno policy to block those annotations. Did it actually work?",
+      "assertions": [
+        "Tests at least one case that must be blocked and one legitimate case that must be allowed",
+        "Proves it against the live cluster (server-side dry run or policy report), not only by reading the committed file",
+        "Treats a timeout or setup failure as inconclusive, never as a pass",
+        "Names the signal that would catch a regression"
+      ],
+      "expect_trigger": true
+    },
+    {
+      "id": "infra-review",
+      "prompt": "Review this Helm values file and GitHub Actions workflow for security problems before I merge.",
+      "assertions": [
+        "Rates findings by exposure times blast radius rather than by pattern alone",
+        "Checks the CI trigger, permissions and untrusted-code combination and action pinning by SHA",
+        "Lists what a file review cannot see (live drift, effective RBAC, runtime) instead of declaring the change clean"
+      ],
+      "expect_trigger": true
+    },
+    {
+      "id": "should-not-fire-general-question",
+      "prompt": "What does the HTTP Strict-Transport-Security header do?",
+      "expect_trigger": false,
+      "assertions": [
+        "Answers the factual question directly without running a triage or review procedure"
+      ]
+    },
+    {
+      "id": "scan-gitops-tree",
+      "prompt": "Before the audit next week, scan our kubernetes/ folder and the .forgejo/workflows for security problems and tell me what to fix first.",
+      "expect_trigger": true,
+      "assertions": [
+        "Runs scripts/infra_scan.py over both paths (or says it would) rather than eyeballing a sample of files",
+        "Reports findings with rule id and file:line, and ranks them by exposure times blast radius instead of by the scanner's default severity",
+        "Treats a privileged workload that is privileged by design (CI daemon, node agent) as a true finding with an owner and review date, not as a false positive",
+        "Lists what a file read cannot see (live drift, admission mutations, effective RBAC, runner isolation) instead of declaring anything clean"
+      ]
+    },
+    {
+      "id": "cve-in-dependency",
+      "prompt": "Dependabot flagged the lodash prototype pollution advisory. Our lockfile has lodash 4.17.21. Are we affected?",
+      "expect_trigger": true,
+      "assertions": [
+        "Queries more than one advisory source (scripts/advisory_lookup.py or OSV plus GitHub) and states which sources answered",
+        "Checks the version actually shipped (lockfile or built artifact), not just the manifest range",
+        "Asks or checks whether the vulnerable functions are reachable from the code before calling it affected",
+        "Words the result as affected when a condition holds, or bounds any 'no advisory' result to the sources checked"
+      ]
+    },
+    {
+      "id": "empty-lookup-is-not-clean",
+      "prompt": "OSV returns nothing for github.com/kata-containers/kata-containers version 3.30.0, so our nodes are fine, right?",
+      "expect_trigger": true,
+      "assertions": [
+        "Does not accept the empty result as 'not affected'",
+        "Points out that the database may key this Go module by pseudo-version or commit rather than the release number, and suggests querying that or the fix commit",
+        "Suggests checking whether the shipped version or commit contains the fix (for example advisory_lookup.py git with the deployed ref)",
+        "Ends on inconclusive or needs review with the smallest fact that would settle it"
+      ]
+    },
+    {
+      "id": "pull-request-target-checkout",
+      "prompt": "Our GitHub workflow runs on pull_request_target so it can comment on PRs, and it checks out the PR head to run the tests. Is that a problem?",
+      "expect_trigger": true,
+      "assertions": [
+        "Identifies that untrusted fork code then runs with the base repository's secrets and write token",
+        "Recommends pull_request for running untrusted code and keeping any privileged step from checking out or executing the head",
+        "Recommends an explicit minimal permissions block and SHA-pinned actions",
+        "Contains no exploit payload"
+      ]
+    },
+    {
+      "id": "dutch-rbac-impact",
+      "prompt": "Hoe groot is de impact van deze ClusterRole die get en list op alle secrets mag doen? Wie kan er misbruik van maken?",
+      "expect_trigger": true,
+      "assertions": [
+        "Fills the blast-radius fields, including who is bound to the role and what it does not give",
+        "Explains that list on secrets returns the values, so it is credential access",
+        "Suggests checking the live bindings and effective permissions read-only (kubectl auth can-i or the bindings), not only the file",
+        "Proposes resourceNames or a narrower role as the fix"
+      ]
+    },
+    {
+      "id": "dutch-trivy-alert",
+      "prompt": "Trivy geeft een kritieke CVE in de base image van onze API-container. Is dit lek echt en moeten we vandaag nog iets doen?",
+      "expect_trigger": true,
+      "assertions": [
+        "Restates the claim and runs the dismissal tests instead of accepting the critical score",
+        "Checks whether the vulnerable package is in the running image and whether the vulnerable path is reachable",
+        "Derives urgency from exposure and blast radius rather than the CVSS base score",
+        "Gives a verdict of confirmed, not actionable or needs review"
+      ]
+    },
+    {
+      "id": "should-not-fire-write-manifest",
+      "prompt": "Write a Kubernetes Deployment and Service for nginx with three replicas.",
+      "expect_trigger": false,
+      "assertions": [
+        "Writes the manifests without running a security triage procedure"
+      ]
+    },
+    {
+      "id": "should-not-fire-crypto-theory",
+      "prompt": "Explain the difference between symmetric and asymmetric encryption for a blog post.",
+      "expect_trigger": false,
+      "assertions": [
+        "Explains the concepts directly without running a review or triage procedure"
+      ]
+    }
+  ]
+}
