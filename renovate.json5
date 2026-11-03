@@ -3,6 +3,8 @@
   extends: [
     'local>webgrip/renovate-config:reviewed#v1.19.2',
     'local>webgrip/renovate-config:golang#v1.19.2',
+    'local>webgrip/renovate-config:apm#v1.19.2',
+    'local>webgrip/renovate-config:docker-arg-pins#v1.19.2',
   ],
   packageRules: [
     {
