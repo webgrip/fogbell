@@ -21,13 +21,13 @@ run = "uv tool run --from 'reuse[charset-normalizer]==6.2.0' reuse lint"
 description = "Check every file carries a licence and copyright"
 
 [tasks.agents-setup]
-run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd setup"
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.7.2#subdirectory=cli' agentstd setup"
 description = "Everything a developer needs once: tools, the agent files, and a diagnosis of this machine"
 
 [tasks.agents-install]
-run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd install"
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.7.2#subdirectory=cli' agentstd install"
 description = "Install the pinned agent packages and compile .apm into .claude/rules and AGENTS.md"
 
 [tasks.agents-check]
-run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.5.3#subdirectory=cli' agentstd check"
+run = "uvx --from 'git+https://forgejo.webgrip.dev/webgrip/agent-standards.git@v0.7.2#subdirectory=cli' agentstd check"
 description = "Fail when an agent file breaks the standard"

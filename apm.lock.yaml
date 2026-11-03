@@ -4,8 +4,8 @@ dependencies:
 - repo_url: webgrip/agent-standards
   name: webgrip-baseline
   host: forgejo.webgrip.dev
-  resolved_commit: a6504b9934f81341deb176fc6e0e654c6bd55254
-  resolved_ref: v0.5.3
+  resolved_commit: a6cbfbaf41bf76aa94f5594abc0fe539ff385f65
+  resolved_ref: v0.7.2
   version: 0.0.0
   virtual_path: packages/baseline
   is_virtual: true
@@ -14,14 +14,14 @@ dependencies:
   - .claude/rules/baseline.md
   - .claude/rules/forgejo-ci.md
   deployed_file_hashes:
-    .claude/rules/baseline.md: sha256:d0ca779fc6b749333676b2bbc68adaaf1277ec8344c37a340cdd38f6c9d423dd
+    .claude/rules/baseline.md: sha256:f82b7ea0ba7ee4d41da440ab99d47129347436e323385d364a4d9c42d933a87d
     .claude/rules/forgejo-ci.md: sha256:18ac65e57d86f5d0c46da55d53582fbfb94ba74d87605e7394a39858fdac3011
-  content_hash: sha256:2cb528fec450d156eb89c1a429d00a2058257b3c5a813772e850f46335044438
+  content_hash: sha256:70309427eb8bb438ab9d9af7dbcbc017b843084707118908c4e395f124731161
 - repo_url: webgrip/agent-standards
   name: webgrip-coderabbit
   host: forgejo.webgrip.dev
-  resolved_commit: a6504b9934f81341deb176fc6e0e654c6bd55254
-  resolved_ref: v0.5.3
+  resolved_commit: a6cbfbaf41bf76aa94f5594abc0fe539ff385f65
+  resolved_ref: v0.7.2
   version: 0.0.0
   virtual_path: packages/coderabbit
   is_virtual: true
@@ -38,18 +38,18 @@ dependencies:
 - repo_url: webgrip/agent-standards
   name: webgrip-secrets
   host: forgejo.webgrip.dev
-  resolved_commit: a6504b9934f81341deb176fc6e0e654c6bd55254
-  resolved_ref: v0.5.3
+  resolved_commit: a6cbfbaf41bf76aa94f5594abc0fe539ff385f65
+  resolved_ref: v0.7.2
   version: 0.0.0
   virtual_path: packages/secrets
   is_virtual: true
   package_type: apm_package
-  content_hash: sha256:027f1e4e1fddc2d6a993e8e430005d795c641568aab3bdf645753af77b3a7d2d
+  content_hash: sha256:9eeeedf8179a73423fcdc2cd8e1738d5009cdeb73cef87db4830ce2e82e8c5bf
 - repo_url: webgrip/agent-standards
   name: webgrip-stack-platform
   host: forgejo.webgrip.dev
-  resolved_commit: a6504b9934f81341deb176fc6e0e654c6bd55254
-  resolved_ref: v0.5.3
+  resolved_commit: a6cbfbaf41bf76aa94f5594abc0fe539ff385f65
+  resolved_ref: v0.7.2
   version: 0.0.0
   virtual_path: packages/stack-platform
   is_virtual: true
@@ -66,25 +66,24 @@ dependencies:
     .claude/rules/kubernetes-gitops.md: sha256:774199ea0319d2f63c017947616a15c173a851be78d5748d17f6d80151d89ecc
     .claude/rules/opentofu.md: sha256:302c82f493a4bfaab5b00cd6cc083d283bdc14d684137e7c456af5f2552d97e6
     .claude/rules/talos.md: sha256:378030078a69c61eccefabb215fd6fbc19cbc58c164730ef901816f54b1b8ec7
-  content_hash: sha256:7055d5bef65508f1ba9a14a140f26632721c2f4800f00d74943aefb72009a48e
+  content_hash: sha256:216a4a5785e4a8dee6166b02198cf1f4de3329b25ef7dd95ad6dd1f410e96a1d
 - repo_url: webgrip/ai-skills
   name: guard-secrets
   host: forgejo.webgrip.dev
-  resolved_commit: 935579bbafa0e80197c8afa9cae99de8cf684db8
-  resolved_ref: guard-secrets-v1.0.6
-  version: 935579b
+  resolved_commit: 58d151dae181cb875cca39b50404ae31f4cc7f13
+  resolved_ref: guard-secrets-v1.1.0
+  version: 58d151d
   virtual_path: skills/guard-secrets
   is_virtual: true
   depth: 2
   resolved_by: webgrip/agent-standards
-  package_type: hybrid
+  package_type: marketplace_plugin
   deployed_files:
   - .agents/skills/guard-secrets
   - .agents/skills/guard-secrets/.claude-plugin/plugin.json
   - .agents/skills/guard-secrets/CHANGELOG.md
   - .agents/skills/guard-secrets/README.md
   - .agents/skills/guard-secrets/SKILL.md
-  - .agents/skills/guard-secrets/apm.yml
   - .agents/skills/guard-secrets/evals/evals.json
   - .agents/skills/guard-secrets/hooks/hooks.json
   - .agents/skills/guard-secrets/scripts/guard_secrets.py
@@ -95,7 +94,6 @@ dependencies:
   - .claude/skills/guard-secrets/CHANGELOG.md
   - .claude/skills/guard-secrets/README.md
   - .claude/skills/guard-secrets/SKILL.md
-  - .claude/skills/guard-secrets/apm.yml
   - .claude/skills/guard-secrets/evals/evals.json
   - .claude/skills/guard-secrets/hooks/hooks.json
   - .claude/skills/guard-secrets/scripts/guard_secrets.py
@@ -105,24 +103,22 @@ dependencies:
     .agents/skills/guard-secrets/.claude-plugin/plugin.json: sha256:eb1286fa35eb333cf74708d9c51cb62f819bf87cd33db785599e86dad3548a75
     .agents/skills/guard-secrets/CHANGELOG.md: sha256:36b6b74db992f2e5e8eaf4099443aa058a2338471be10e98055e8ce44d0b3a46
     .agents/skills/guard-secrets/README.md: sha256:839740649fd8dceb1c8a41ebabe319009a0ae13badc76acd3505bd090baffe19
-    .agents/skills/guard-secrets/SKILL.md: sha256:bc76648fe95c05ae34a945c15a50e91c28d329720ea4c28bcb08d6e16080c84a
-    .agents/skills/guard-secrets/apm.yml: sha256:46c5558c38a03df7b12d7bf7991a999589858047ee044c9f5c2d8a1972b8f76e
+    .agents/skills/guard-secrets/SKILL.md: sha256:7367735a384c61637aade4f817415c9c79df6a6ce5129a5f9a521fb27211d800
     .agents/skills/guard-secrets/evals/evals.json: sha256:15982cab206b9c4d4c713fb13b4ef245e8bf9d038b724a5547ff288c5e1ee05c
     .agents/skills/guard-secrets/hooks/hooks.json: sha256:bf9110355bb1cda59e34f71408333bb08103ce219f3aebb3c5c597c44290dfdc
-    .agents/skills/guard-secrets/scripts/guard_secrets.py: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
-    .agents/skills/guard-secrets/test.sh: sha256:a9f8ce58bbb82a59442950e161367fd03b360fd54d37c2bdf5d9c4376aa876d4
-    .claude/hooks/guard-secrets/scripts/guard_secrets.py: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
+    .agents/skills/guard-secrets/scripts/guard_secrets.py: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
+    .agents/skills/guard-secrets/test.sh: sha256:b5555097b173bf932bc3c9b876f1bdbced34d104c23d309e3b5fdf80166df0c9
+    .claude/hooks/guard-secrets/scripts/guard_secrets.py: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
     .claude/skills/guard-secrets/.claude-plugin/plugin.json: sha256:eb1286fa35eb333cf74708d9c51cb62f819bf87cd33db785599e86dad3548a75
     .claude/skills/guard-secrets/CHANGELOG.md: sha256:36b6b74db992f2e5e8eaf4099443aa058a2338471be10e98055e8ce44d0b3a46
     .claude/skills/guard-secrets/README.md: sha256:839740649fd8dceb1c8a41ebabe319009a0ae13badc76acd3505bd090baffe19
-    .claude/skills/guard-secrets/SKILL.md: sha256:bc76648fe95c05ae34a945c15a50e91c28d329720ea4c28bcb08d6e16080c84a
-    .claude/skills/guard-secrets/apm.yml: sha256:46c5558c38a03df7b12d7bf7991a999589858047ee044c9f5c2d8a1972b8f76e
+    .claude/skills/guard-secrets/SKILL.md: sha256:7367735a384c61637aade4f817415c9c79df6a6ce5129a5f9a521fb27211d800
     .claude/skills/guard-secrets/evals/evals.json: sha256:15982cab206b9c4d4c713fb13b4ef245e8bf9d038b724a5547ff288c5e1ee05c
     .claude/skills/guard-secrets/hooks/hooks.json: sha256:bf9110355bb1cda59e34f71408333bb08103ce219f3aebb3c5c597c44290dfdc
-    .claude/skills/guard-secrets/scripts/guard_secrets.py: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
-    .claude/skills/guard-secrets/test.sh: sha256:a9f8ce58bbb82a59442950e161367fd03b360fd54d37c2bdf5d9c4376aa876d4
-    .codex/hooks/guard-secrets/scripts/guard_secrets.py: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
-  content_hash: sha256:bbfbfa199d75ec81bbe4668a15a87813883559f320d3990c0025a99d898fd73f
+    .claude/skills/guard-secrets/scripts/guard_secrets.py: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
+    .claude/skills/guard-secrets/test.sh: sha256:b5555097b173bf932bc3c9b876f1bdbced34d104c23d309e3b5fdf80166df0c9
+    .codex/hooks/guard-secrets/scripts/guard_secrets.py: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
+  content_hash: sha256:15700620c0a99fa21d7f81b59215a9584e3543d270198ed7fe57cd43564e15e4
   declared_license: MIT
 - repo_url: webgrip/ai-skills
   name: secrets-levels
@@ -172,14 +168,14 @@ dependencies:
 - repo_url: webgrip/ai-skills
   name: security-review-triage
   host: forgejo.webgrip.dev
-  resolved_commit: 935579bbafa0e80197c8afa9cae99de8cf684db8
-  resolved_ref: security-review-triage-v0.2.1
-  version: 935579b
+  resolved_commit: 02fc51e2cbd93d34679583595380254870381173
+  resolved_ref: security-review-triage-v0.2.2
+  version: 02fc51e
   virtual_path: skills/security-review-triage
   is_virtual: true
   depth: 2
   resolved_by: webgrip/agent-standards
-  package_type: hybrid
+  package_type: marketplace_plugin
   deployed_files:
   - .agents/skills/security-review-triage
   - .agents/skills/security-review-triage/.claude-plugin/plugin.json
@@ -188,7 +184,6 @@ dependencies:
   - .agents/skills/security-review-triage/README.md
   - .agents/skills/security-review-triage/SKILL.md
   - .agents/skills/security-review-triage/advisories.md
-  - .agents/skills/security-review-triage/apm.yml
   - .agents/skills/security-review-triage/case-sandbox-annotations.md
   - .agents/skills/security-review-triage/checks.md
   - .agents/skills/security-review-triage/disclosure.md
@@ -234,7 +229,6 @@ dependencies:
   - .claude/skills/security-review-triage/README.md
   - .claude/skills/security-review-triage/SKILL.md
   - .claude/skills/security-review-triage/advisories.md
-  - .claude/skills/security-review-triage/apm.yml
   - .claude/skills/security-review-triage/case-sandbox-annotations.md
   - .claude/skills/security-review-triage/checks.md
   - .claude/skills/security-review-triage/disclosure.md
@@ -280,14 +274,13 @@ dependencies:
     .agents/skills/security-review-triage/README.md: sha256:a026bf9c8a9a9be4efc7e1c347dae8440f2fc19c872b9c5f060ca32c88cb8eab
     .agents/skills/security-review-triage/SKILL.md: sha256:ae498827c682aab7919ebb85726641e01e1aa78d2724aa299b925654cb5d986c
     .agents/skills/security-review-triage/advisories.md: sha256:b76df6f7bb6500240e2a4b6b10e6397601f33d5ea6552266965d3673c137ad06
-    .agents/skills/security-review-triage/apm.yml: sha256:31902085aed53295d1aba3b3e469e745c75034dddeb5eaad776fecc53e496411
     .agents/skills/security-review-triage/case-sandbox-annotations.md: sha256:56d7016a122c4d39f51d2d56faa0c6f87006272ffa1dc4f3884e074999b322dd
     .agents/skills/security-review-triage/checks.md: sha256:2dbf226479886a99d47199564e3dd311e3a4722146c322075bacc00c43e26bc1
     .agents/skills/security-review-triage/disclosure.md: sha256:0e491a21747c3f3f229bcbc6853c175d2a2c134d3e0f79fcb6302c636d64b3e2
     .agents/skills/security-review-triage/evals/evals.json: sha256:f27dc64843df5edca90763cccaba1f64f10de7c674e48aeaed769f1ff1f93686
     .agents/skills/security-review-triage/evidence.md: sha256:fdbe076c5c57e7fbf12f98c7fd239c7243aac02c4d3906ee7a90b023f19feb8d
     .agents/skills/security-review-triage/fixtures/careful/.github/workflows/pr.yml: sha256:6f22bc6832741ffcf44e377536e1e2ba37d0ea19b733162508339164862983c9
-    .agents/skills/security-review-triage/fixtures/careful/image/Dockerfile: sha256:45cffac0eecfab44fe5ac781763d6572f760c577175cb04877cddf666b5806df
+    .agents/skills/security-review-triage/fixtures/careful/image/Dockerfile: sha256:d47809e6638dca7bfd8fe3b22782a7d7cac3cc10193b890adc16533e4b332c21
     .agents/skills/security-review-triage/fixtures/careful/k8s/app/alerts.yaml: sha256:d91baa2ac5ea2ddd4339711fdc39f773bb4af65753eb6c05df5a5ceb1504c692
     .agents/skills/security-review-triage/fixtures/careful/k8s/app/deployment.yaml: sha256:f27c4ccaeb41e3a96f49f589f6899fa279a198d0ab53e4832efccc2026cd54eb
     .agents/skills/security-review-triage/fixtures/careful/k8s/app/helmrelease.yaml: sha256:c6dda96c7ff5f2f7b85f4b25a1a76c19610cb3c94012a96f22c638572757d577
@@ -325,14 +318,13 @@ dependencies:
     .claude/skills/security-review-triage/README.md: sha256:a026bf9c8a9a9be4efc7e1c347dae8440f2fc19c872b9c5f060ca32c88cb8eab
     .claude/skills/security-review-triage/SKILL.md: sha256:ae498827c682aab7919ebb85726641e01e1aa78d2724aa299b925654cb5d986c
     .claude/skills/security-review-triage/advisories.md: sha256:b76df6f7bb6500240e2a4b6b10e6397601f33d5ea6552266965d3673c137ad06
-    .claude/skills/security-review-triage/apm.yml: sha256:31902085aed53295d1aba3b3e469e745c75034dddeb5eaad776fecc53e496411
     .claude/skills/security-review-triage/case-sandbox-annotations.md: sha256:56d7016a122c4d39f51d2d56faa0c6f87006272ffa1dc4f3884e074999b322dd
     .claude/skills/security-review-triage/checks.md: sha256:2dbf226479886a99d47199564e3dd311e3a4722146c322075bacc00c43e26bc1
     .claude/skills/security-review-triage/disclosure.md: sha256:0e491a21747c3f3f229bcbc6853c175d2a2c134d3e0f79fcb6302c636d64b3e2
     .claude/skills/security-review-triage/evals/evals.json: sha256:f27dc64843df5edca90763cccaba1f64f10de7c674e48aeaed769f1ff1f93686
     .claude/skills/security-review-triage/evidence.md: sha256:fdbe076c5c57e7fbf12f98c7fd239c7243aac02c4d3906ee7a90b023f19feb8d
     .claude/skills/security-review-triage/fixtures/careful/.github/workflows/pr.yml: sha256:6f22bc6832741ffcf44e377536e1e2ba37d0ea19b733162508339164862983c9
-    .claude/skills/security-review-triage/fixtures/careful/image/Dockerfile: sha256:45cffac0eecfab44fe5ac781763d6572f760c577175cb04877cddf666b5806df
+    .claude/skills/security-review-triage/fixtures/careful/image/Dockerfile: sha256:d47809e6638dca7bfd8fe3b22782a7d7cac3cc10193b890adc16533e4b332c21
     .claude/skills/security-review-triage/fixtures/careful/k8s/app/alerts.yaml: sha256:d91baa2ac5ea2ddd4339711fdc39f773bb4af65753eb6c05df5a5ceb1504c692
     .claude/skills/security-review-triage/fixtures/careful/k8s/app/deployment.yaml: sha256:f27c4ccaeb41e3a96f49f589f6899fa279a198d0ab53e4832efccc2026cd54eb
     .claude/skills/security-review-triage/fixtures/careful/k8s/app/helmrelease.yaml: sha256:c6dda96c7ff5f2f7b85f4b25a1a76c19610cb3c94012a96f22c638572757d577
@@ -364,7 +356,7 @@ dependencies:
     .claude/skills/security-review-triage/test.sh: sha256:5e99fad4fb7828c81ac40ed718619cfcd03f0e07f3543b144a65064546233c85
     .claude/skills/security-review-triage/triage.md: sha256:d9bf5b49028681b07db68c6372e753bf204d53a3ccaf685346a6753eb7607ccc
     .claude/skills/security-review-triage/verify.md: sha256:30ce62c920f88e747f114d82e2fc6507c22ffa2999e36d1742d2e45888e2c438
-  content_hash: sha256:2734d61edecd63f19925f68386fa5a95d3dcda7613902bde34774b16f3f90c90
+  content_hash: sha256:b14f4af37ffa753ec6f3a97b316897b94e3e7b1a556e22c1fcbb53b16ce4f95e
   declared_license: MIT
 deployments:
 - kind: project-relative
@@ -375,7 +367,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
+  content_hash: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
 - kind: project-relative
   target: claude
   value: .claude/rules/baseline.md
@@ -384,7 +376,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/agent-standards/packages/baseline
   active_owner: forgejo.webgrip.dev/webgrip/agent-standards/packages/baseline
-  content_hash: sha256:d0ca779fc6b749333676b2bbc68adaaf1277ec8344c37a340cdd38f6c9d423dd
+  content_hash: sha256:f82b7ea0ba7ee4d41da440ab99d47129347436e323385d364a4d9c42d933a87d
 - kind: project-relative
   target: claude
   value: .claude/rules/container-images.md
@@ -510,16 +502,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:bc76648fe95c05ae34a945c15a50e91c28d329720ea4c28bcb08d6e16080c84a
-- kind: project-relative
-  target: claude
-  value: .claude/skills/guard-secrets/apm.yml
-  runtime: null
-  scope: project
-  owners:
-  - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:46c5558c38a03df7b12d7bf7991a999589858047ee044c9f5c2d8a1972b8f76e
+  content_hash: sha256:7367735a384c61637aade4f817415c9c79df6a6ce5129a5f9a521fb27211d800
 - kind: project-relative
   target: claude
   value: .claude/skills/guard-secrets/evals/evals.json
@@ -546,7 +529,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
+  content_hash: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
 - kind: project-relative
   target: claude
   value: .claude/skills/guard-secrets/test.sh
@@ -555,7 +538,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:a9f8ce58bbb82a59442950e161367fd03b360fd54d37c2bdf5d9c4376aa876d4
+  content_hash: sha256:b5555097b173bf932bc3c9b876f1bdbced34d104c23d309e3b5fdf80166df0c9
 - kind: project-relative
   target: claude
   value: .claude/skills/secrets-levels
@@ -693,15 +676,6 @@ deployments:
   content_hash: sha256:b76df6f7bb6500240e2a4b6b10e6397601f33d5ea6552266965d3673c137ad06
 - kind: project-relative
   target: claude
-  value: .claude/skills/security-review-triage/apm.yml
-  runtime: null
-  scope: project
-  owners:
-  - forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  content_hash: sha256:31902085aed53295d1aba3b3e469e745c75034dddeb5eaad776fecc53e496411
-- kind: project-relative
-  target: claude
   value: .claude/skills/security-review-triage/case-sandbox-annotations.md
   runtime: null
   scope: project
@@ -762,7 +736,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  content_hash: sha256:45cffac0eecfab44fe5ac781763d6572f760c577175cb04877cddf666b5806df
+  content_hash: sha256:d47809e6638dca7bfd8fe3b22782a7d7cac3cc10193b890adc16533e4b332c21
 - kind: project-relative
   target: claude
   value: .claude/skills/security-review-triage/fixtures/careful/k8s/app/alerts.yaml
@@ -1104,16 +1078,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:bc76648fe95c05ae34a945c15a50e91c28d329720ea4c28bcb08d6e16080c84a
-- kind: project-relative
-  target: codex
-  value: .agents/skills/guard-secrets/apm.yml
-  runtime: null
-  scope: project
-  owners:
-  - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:46c5558c38a03df7b12d7bf7991a999589858047ee044c9f5c2d8a1972b8f76e
+  content_hash: sha256:7367735a384c61637aade4f817415c9c79df6a6ce5129a5f9a521fb27211d800
 - kind: project-relative
   target: codex
   value: .agents/skills/guard-secrets/evals/evals.json
@@ -1140,7 +1105,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
+  content_hash: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
 - kind: project-relative
   target: codex
   value: .agents/skills/guard-secrets/test.sh
@@ -1149,7 +1114,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:a9f8ce58bbb82a59442950e161367fd03b360fd54d37c2bdf5d9c4376aa876d4
+  content_hash: sha256:b5555097b173bf932bc3c9b876f1bdbced34d104c23d309e3b5fdf80166df0c9
 - kind: project-relative
   target: codex
   value: .agents/skills/secrets-levels
@@ -1287,15 +1252,6 @@ deployments:
   content_hash: sha256:b76df6f7bb6500240e2a4b6b10e6397601f33d5ea6552266965d3673c137ad06
 - kind: project-relative
   target: codex
-  value: .agents/skills/security-review-triage/apm.yml
-  runtime: null
-  scope: project
-  owners:
-  - forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  content_hash: sha256:31902085aed53295d1aba3b3e469e745c75034dddeb5eaad776fecc53e496411
-- kind: project-relative
-  target: codex
   value: .agents/skills/security-review-triage/case-sandbox-annotations.md
   runtime: null
   scope: project
@@ -1356,7 +1312,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/security-review-triage
-  content_hash: sha256:45cffac0eecfab44fe5ac781763d6572f760c577175cb04877cddf666b5806df
+  content_hash: sha256:d47809e6638dca7bfd8fe3b22782a7d7cac3cc10193b890adc16533e4b332c21
 - kind: project-relative
   target: codex
   value: .agents/skills/security-review-triage/fixtures/careful/k8s/app/alerts.yaml
@@ -1644,7 +1600,7 @@ deployments:
   owners:
   - forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
   active_owner: forgejo.webgrip.dev/webgrip/ai-skills/skills/guard-secrets
-  content_hash: sha256:f783ff501c9c1ec167f5a644ba7c8547bfc345074a67dd8a9bad2bb6567eb753
+  content_hash: sha256:2ad09dea1ffacd145b4a8dd8def1913f7f066505663ef47a9d9f178cd62bc6df
 local_deployed_files:
 - .claude/rules/repo.md
 local_deployed_file_hashes:
