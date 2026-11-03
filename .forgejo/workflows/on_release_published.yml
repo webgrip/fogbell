@@ -65,7 +65,7 @@ jobs:
           fi
       - name: Build and push (Harbor)
         if: steps.published.outputs.present != 'true'
-        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/docker-build-push-registry-fast@v3.3.0
+        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/docker-build-push-registry-fast@v3.5.1
         with:
           registry: harbor.webgrip.dev
           docker-context: "."
@@ -100,7 +100,7 @@ jobs:
           image-ref: ${{ steps.digest.outputs.ref }}
           image-name: fogbell
       - name: Sign, attest and SBOM (Harbor)
-        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/cosign-sign-attest@v3.3.0
+        uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/cosign-sign-attest@v3.5.1
         with:
           registry: harbor.webgrip.dev
           image-name: harbor.webgrip.dev/webgrip/fogbell
@@ -109,7 +109,7 @@ jobs:
   chart:
     name: Push the chart (Harbor)
     needs: [parse-release-tag, image]
-    uses: webgrip/workflows/.forgejo/workflows/helm-chart-push.yml@cc494a9384d6e5edc88031b8d32f6de4de908139 # v3.3.0
+    uses: webgrip/workflows/.forgejo/workflows/helm-chart-push.yml@9d3e16539bcbd8158d51fcd54f2542b20720fd41 # v3.5.1
     secrets:
       REGISTRY_USERNAME: ${{ secrets.HARBOR_ROBOT_USER }}
       REGISTRY_TOKEN: ${{ secrets.HARBOR_ROBOT_TOKEN }}

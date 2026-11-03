@@ -1,7 +1,7 @@
 image:
   repository: harbor.webgrip.dev/webgrip/fogbell
   # Defaults to the chart's appVersion. Pin a digest with `digest`.
-  tag: ""
+  tag: "@sha256:424b39df30c5c8790317648498041b4db55da15d996d398cca5e40f8f5c2eeb2"
   digest: ""
   pullPolicy: IfNotPresent
 
