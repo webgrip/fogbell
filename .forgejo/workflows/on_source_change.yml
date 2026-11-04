@@ -72,7 +72,7 @@ jobs:
       pull-requests: write
       statuses: write
     steps:
-      - uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/semantic-release@v3.3.2
+      - uses: https://forgejo.webgrip.dev/webgrip/workflows/.forgejo/composite-actions/semantic-release@v4.2.0
         with:
           token: ${{ secrets.WEBGRIP_CI_TOKEN }}
           install-dependencies: 'false'
