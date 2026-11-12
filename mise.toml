@@ -2,11 +2,11 @@
 lockfile = true
 
 [tools]
-go = "1.27.3"
+go = "1.27.4"
 golangci-lint = "2.15.0"
-helm = "4.3.0"
+helm = "4.3.1"
 shellcheck = "0.11.0"
-uv = "0.12.22"
+uv = "0.13.7"
 
 [tasks.setup]
 run = "mise install"

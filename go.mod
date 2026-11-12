@@ -5,9 +5,9 @@ go 1.26.0
 toolchain go1.27.3
 
 require (
-	github.com/VictoriaMetrics/metricsql v0.87.5
+	github.com/VictoriaMetrics/metricsql v0.87.6
 	github.com/prometheus/client_golang v1.25.0
-	go.yaml.in/yaml/v3 v3.0.5
+	go.yaml.in/yaml/v3 v3.0.6
 )
 
 require (
